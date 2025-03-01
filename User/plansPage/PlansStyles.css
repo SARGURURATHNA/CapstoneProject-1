@@ -1,0 +1,163 @@
+/* Apply Poppins font to the whole page */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+body[data-bs-theme="dark"] {
+    background-color: #121212;
+    color: white;
+}
+
+body[data-bs-theme="light"] {
+    background-color: #f2f3f8;
+}
+
+:root{
+    --nav-primary : #dfe5f9;
+}
+.plan-card {
+    background-color: var(--nav-primary);
+    position: relative;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    width: 18rem;
+    transition: 0.3s;
+}
+
+.benefit-badge{
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    right: 5px; /* Adjust distance from right */
+    background: blue; /* Keep blue background */
+    color: white; /* White text */
+    font-size: 0.75rem; /* Slightly smaller text */
+    padding: 6px 12px; /* Padding for a nice pill shape */
+    border-radius: 20px; /* Rounded corners */
+    font-weight: bold;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.btn-buy {
+    width: 100%;
+    background-color: #0047ff;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+}
+.btn-buy:hover{
+    background-color: rgb(11, 11, 196);
+    color: white;
+}
+
+body[data-bs-theme="dark"] .plan-card {
+    background-color: #1e1e1e;
+    color: white;
+    border: 2px solid #007bff;
+}
+
+body[data-bs-theme="dark"] .btn-buy {
+    background-color: #007bff;
+}
+
+body[data-bs-theme="dark"] .btn-buy:hover {
+    background-color: #0056b3;
+}
+
+body[data-bs-theme="light"] .navbar{
+    background-color: #f1effd;
+}
+
+body[data-bs-theme="light"] .footer{
+    background-color: #f1effd;
+}
+
+body[data-bs-theme="dark"] .navbar{
+    background-color: #2b3035;
+}
+body[data-bs-theme="dark"] .footer{
+    background-color: #2b3035;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-tabs .nav-link {
+    color: black !important;
+}
+
+body[data-bs-theme="dark"] .nav-tabs .nav-link {
+    color: white !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff !important;
+    font-weight: bold;
+}
+ 
+body[data-bs-theme="dark"] .nav-tabs .nav-link.active {
+    color: #007bff !important;
+    font-weight: bold;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.All_Plans {
+    flex: 1;
+}
+
+.navbar-brand .footer-brand{
+    font-size: 48px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
+
+.slanted {
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+
+.normal {
+    color: #000;
+}
+
+body[data-bs-theme="dark"] .normal {
+    color: white;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+#themeToggle {
+    background: none !important; /* Remove background */
+    border: none !important; /* Remove border */
+    box-shadow: none !important; /* Remove any shadow */
+    padding: 5px; /* Adjust padding if needed */
+}
+
+#themeIcon {
+    font-size: 24px; /* Adjust size if needed */
+    color: inherit !important; /* Inherit text color */
+}
+/* Light theme - icon should be black */
+body[data-bs-theme="light"] #themeIcon {
+    color: black !important;
+}
+
+/* Dark theme - icon should be white */
+body[data-bs-theme="dark"] #themeIcon {
+    color: white !important;
+}

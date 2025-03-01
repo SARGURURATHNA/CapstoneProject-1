@@ -1,0 +1,133 @@
+/* Apply Poppins font to the whole page */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.navbar-brand .footer-brand{
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'poppins';
+}
+
+.slanted {
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+
+.normal {
+    color: black;
+}
+
+body[data-bs-theme="light"]{
+    background-color: #f2f3f8;
+}
+
+body[data-bs-theme="dark"] .normal {
+    color: white;
+}
+body[data-bs-theme="dark"] .navbar{
+    background-color: #2b3035;
+}
+body[data-bs-theme="dark"] .footer{
+    background-color: #2b3035;
+}
+
+body[data-bs-theme="light"] .navbar{
+    background-color: #f1effd;
+}
+body[data-bs-theme="light"] .footer{
+    background-color: #f1effd;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.plan-info {
+    border-radius: 15px;
+    width: 100%;
+    background-color: #dfe5f9;
+    padding: 20px;
+    text-align: center;
+}
+
+.plan-badge {
+    background-color: #dfe5f9;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.btn-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
+
+body[data-bs-theme="light"] {
+    background-color: #f2f3f8;
+}
+
+body[data-bs-theme="dark"] .prompt{
+    color: white;
+}
+
+body[data-bs-theme="dark"] p{
+    color: black;
+}
+
+body[data-bs-theme="dark"]{
+    background-color: black;
+    color: white;
+}
+
+body[data-bs-theme="dark"] #cost,
+body[data-bs-theme="dark"] #validity,
+body[data-bs-theme="dark"] #data,
+body[data-bs-theme="dark"] #sms,
+body[data-bs-theme="dark"] #calls {
+    color: black !important;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+#themeToggle {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 5px;
+}
+
+#themeIcon {
+    font-size: 24px;
+    color: inherit !important;
+}
+/* Light theme - icon should be black */
+body[data-bs-theme="light"] #themeIcon {
+    color: black !important;
+}
+
+/* Dark theme - icon should be white */
+body[data-bs-theme="dark"] #themeIcon {
+    color: white !important;
+}

@@ -1,0 +1,316 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f2f3f8;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease-in-out;
+    width: 48rem;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.view-btn{
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: blue;
+}
+
+.download-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+}
+
+.download-icon {
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.download-btn:hover {
+    background-color: blue;
+}
+
+.user-info-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.account-details,
+.current-plan {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    width: 25%;
+    text-align: left;
+}
+
+
+.edit-icon {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 24px;
+}
+
+.modal .form-label {
+    font-weight: bold;
+}
+
+input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+
+body[data-bs-theme="dark"] .account-details,
+body[data-bs-theme="dark"] .current-plan{
+    color: white;
+    background-color: #2b3035;
+}
+
+.account-details .edit-icon {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.account-details h6,
+.current-plan h6 {
+    margin-bottom: 2px;
+    font-weight: bold;
+}
+
+.account-details p,
+.current-plan p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.current-plan .d-flex {
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.details {
+    display: none;
+    background: #f8f9fa;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transaction-table td {
+    padding: 5px 10px;
+    text-align: center;
+    border: 2px solid gray;
+}
+
+.transaction-table td:first-child {
+    width: 200px;
+    font-weight: bold;
+}
+
+.plan-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.plan-table td {
+    padding: 5px 10px;
+    text-align: center;
+    border: 2px solid gray;
+}
+
+.plan-table td:first-child {
+    width: 200px;
+    font-weight: bold;
+}
+
+
+.navbar-brand .footer-brand{
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'poppins';
+}
+
+/* Ensure the body and html take full height */
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make the main content take available space */
+.History {
+    flex: 1;
+}
+
+/* Fix the footer at the bottom */
+.footer {
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    background-color: #f1effd;
+}
+
+.slanted {
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+.normal {
+    color: black;
+}
+body[data-bs-theme="dark"] .normal {
+    color: white;
+}
+body[data-bs-theme="dark"] .navbar{
+    background-color: #2b3035;
+}
+body[data-bs-theme="dark"] .footer{
+    background-color: #2b3035;
+}
+
+body[data-bs-theme="light"] .navbar{
+    background-color: #f1effd;
+}
+body[data-bs-theme="light"] .footer{
+    background-color: #f1effd;
+}
+
+body[data-bs-theme="dark"] .card-content{
+    color: white;
+}
+
+body[data-bs-theme="dark"] .recharge-month{
+    color: white;
+}
+
+body[data-bs-theme="dark"] .details{
+    background-color: whitesmoke;
+    color: black;
+}
+
+body[data-bs-theme="dark"]{
+    background-color: black;
+}
+
+/* Apply dark mode styles */
+body[data-bs-theme="dark"] .form-control {
+    background-color: transparent !important; /* Make all input fields transparent like the email field */
+    color: white !important; /* White text for readability */
+    border: 1px solid #ced4da; /* Light border */
+}
+
+/* Specific style for email input to always have white background and black text */
+body[data-bs-theme="dark"] #editEmail {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* Dark mode styles */
+body[data-bs-theme="dark"] .modal-content {
+    background-color: #212529 !important; /* Dark background */
+    color: white !important; /* White text */
+}
+
+body[data-bs-theme="dark"] .table {
+    color: white !important; /* White text for table */
+    border-color: #dee2e6; /* Light border */
+}
+
+body[data-bs-theme="dark"] .table th,
+body[data-bs-theme="dark"] .table td {
+    color: white !important;
+    border-color: #dee2e6 !important; /* Light border */
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    border-color: #444 !important; /* Darker borders */
+}
+
+
+#themeToggle {
+    background: none !important; /* Remove background */
+    border: none !important; /* Remove border */
+    box-shadow: none !important; /* Remove any shadow */
+    padding: 5px; /* Adjust padding if needed */
+}
+
+#themeIcon {
+    font-size: 24px; /* Adjust size if needed */
+    color: inherit !important; /* Inherit text color */
+}
+/* Light theme - icon should be black */
+body[data-bs-theme="light"] #themeIcon {
+    color: black !important;
+}
+
+/* Dark theme - icon should be white */
+body[data-bs-theme="dark"] #themeIcon {
+    color: white !important;
+}
+
+/* profile pic*/
+.profile-pic-container {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #ddd;
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.initial-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+}
+
+.text-end {
+    text-align: right;
+}

@@ -1,0 +1,311 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+/* Apply Poppins font to the whole page */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+body[data-bs-theme="dark"] {
+    background-color: #121212;
+    color: white;
+}
+:root{
+    --nav-primary : #dfe5f9;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.btn-buy {
+    width: 100%;
+    background-color: #0047ff;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+}
+.btn-buy:hover{
+    background-color: rgb(11, 11, 196);
+    color: white;
+}
+
+.btn-all_plans {
+    background-color: transparent;
+    border: 2px solid black;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+
+.btn-all_plans:hover {
+    background-color: rgb(11, 11, 196);
+    color: white;
+}
+
+.btn-recharge{
+    background-color: #0047ff;
+    color: white;
+}
+.btn-recharge:hover{
+    background-color: rgb(11, 11, 196);
+    color: white; 
+}
+
+body[data-bs-theme="dark"] .btn-buy {
+    background-color: #007bff;
+}
+
+body[data-bs-theme="dark"] .btn-buy:hover {
+    background-color: #0056b3;
+}
+
+body[data-bs-theme="dark"] .btn-all_plans {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+body[data-bs-theme="dark"] .btn-all_plans:hover {
+    border: 2px solid #0056b3;
+    background-color: #0056b3;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
+
+.navbar-brand .footer-brand{
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'poppins';
+}
+.slanted {
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+.normal {
+    color: black;
+}
+body[data-bs-theme="dark"] .normal {
+    color: white;
+}
+body[data-bs-theme="dark"] .navbar{
+    background-color: #2b3035;
+}
+body[data-bs-theme="dark"] .footer{
+    background-color: #2b3035;
+}
+
+body[data-bs-theme="light"] .navbar{
+    background-color: #f1effd;
+}
+body[data-bs-theme="light"] .footer{
+    background-color: #f1effd;
+}
+
+body[data-bs-theme="light"] .content {
+    position: relative;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+body[data-bs-theme="light"] .content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('Assets/bg_img.jpg') no-repeat center center/cover;
+    z-index: -1;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+#themeToggle {
+    background: none !important; /* Remove background */
+    border: none !important; /* Remove border */
+    box-shadow: none !important; /* Remove any shadow */
+    padding: 5px; /* Adjust padding if needed */
+}
+
+#themeIcon {
+    font-size: 24px; /* Adjust size if needed */
+    color: inherit !important; /* Inherit text color */
+}
+/* Light theme - icon should be black */
+body[data-bs-theme="light"] #themeIcon {
+    color: black !important;
+}
+
+/* Dark theme - icon should be white */
+body[data-bs-theme="dark"] #themeIcon {
+    color: white !important;
+}
+
+body[data-bs-theme="dark"] .content {
+    position: relative;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/*new*/
+.plan-container {
+    display: flex;
+    justify-content: center; /* Centering the cards */
+    gap: 20px; /* Spacing between cards */
+    flex-wrap: wrap; /* Wrap if screen is small */
+    margin-top: 20px;
+}
+
+.plan-card {
+    background-color: var(--nav-primary);
+    padding: 20px;
+    text-align: center;
+    width: 18rem;
+    transition: 0.3s;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body[data-bs-theme="dark"] .plan-card{
+    background-color: #2b3035;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.plan-details p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+}
+
+.plan-details strong {
+    flex: 1;
+}
+
+.plan-details span {
+    flex: 1;
+    text-align: start;
+}
+
+
+.btn-buy {
+    width: 100%;
+    background-color: #0047ff;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.btn-buy:hover {
+    background-color: rgb(11, 11, 196);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .plan-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+/* main-carousel*/
+.mobicom-carousel {
+    width: 80%;
+    height: 400px;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.main-carousel-inner {
+    width: 100%;
+    height: 100%;
+}
+
+.main-carousel-item {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+
+.main-carousel-item:nth-child(1) {
+    background-image: url('Assets/slide1_img_11zon.jpg');
+}
+
+.main-carousel-item:nth-child(2) {
+    background-image: url('Assets/slide2_img_11zon.jpg');
+}
+
+.main-carousel-item:nth-child(3) {
+    background-image: url('Assets/slide3_img_11zon.jpg');
+}
+
+.main-carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+.main-carousel-content {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.slide-left {
+    left: 65%;
+    width: 50%;
+}
+
+.slide-right {
+    left: 40%;
+    width: 50%;
+}
+
+.mainText {
+    font-size: 2rem;
+    color: blue;
+}
+
+.subText {
+    font-size: 1.2rem;
+    color: black;
+}

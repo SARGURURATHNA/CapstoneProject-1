@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="AdminStyles.css">
+</head>
+<body>
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <section class="sidebar-section">
+            <div class="sidebar">
+                <div>
+                    <ul class="nav flex-column">
+                        <a class="navbar-brand mb-3 ms-3" href="../dashboardPage/Admin.html"><span class="slanted">Mobi</span><span class="normal">Com</span></a>
+                        <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../analysisPage/Analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../manageplansPage/ManagePlans.html">Manage Plans</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../managesubscribersPage/ManageSubscribers.html">Manage Subscribers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <a class="nav-link mb-3" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">View Profile</a>
+                    <a href="../loginPage/Login.html" class="btn btn-danger btn-block">Log Out</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Subscriber Details Section -->
+        <section class="Subscriber-details text-center mt-5 w-100">
+            <div class="container mt-5">
+                <h4>Subscribers who's plan is expiring in 3 days.<button id="downloadAll" class="btn bg-transparent border-0 me-2">
+                    <span class="material-icons text-primary">download</span>
+                </button></h4>
+
+                <div id="SubsContainer" class="d-flex flex-column align-items-center mt-4">
+                    <!-- Subscriber details will be added dynamically here -->
+                </div> 
+            </div>
+        </section>
+    </div>
+
+    <!-- View Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">Admin Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Personal Information -->
+                <h6>Personal Information</h6>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>Name:</strong> <span id="adminName">John Doe</span></li>
+                    <li class="list-group-item"><strong>Phone Number:</strong> <span id="adminPhone">+91 9856471230</span></li>
+                    <li class="list-group-item"><strong>Email:</strong> <span id="adminEmail">andrew@gmail.com</span></li>
+                    <li class="list-group-item"><strong>Address:</strong> <span id="adminAddress">123 Main St, Mumbai City</span></li>
+                    <li class="list-group-item"><strong>Date of Birth:</strong> <span id="adminDOB">01 Jan 1990</span></li>
+                </ul>
+                <hr>
+                <!-- Login Information -->
+                <h6>Login Information</h6>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Username:</strong> <span id="adminUsername">Andrew</span></li>
+                    <li class="list-group-item"><strong>Password:</strong> <span id="adminPassword">*******</span> 
+                        <button class="btn btn-sm btn-secondary ms-2" id="togglePassword">Show</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="Admin.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../commonJS/SideBar.js"></script>
+</html>

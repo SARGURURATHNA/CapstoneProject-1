@@ -1,0 +1,126 @@
+/* Apply Poppins font to the whole page */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: whitesmoke;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body[data-bs-theme="dark"]{
+    background-color: black;
+}
+
+body[data-bs-theme="light"] {
+    background-color: #f2f3f8;
+}
+
+body[data-bs-theme="dark"] .form-container{
+    background-color: #1e1e1e;
+}
+
+.navbar-brand .footer-brand{
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'poppins';
+}
+.slanted {
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+.normal {
+    color: black;
+}
+body[data-bs-theme="dark"] .normal {
+    color: white;
+}
+body[data-bs-theme="dark"] .navbar{
+    background-color: #2b3035;
+}
+body[data-bs-theme="dark"] .footer{
+    background-color: #2b3035;
+}
+
+body[data-bs-theme="light"] .navbar{
+    background-color: #f1effd;
+}
+body[data-bs-theme="light"] .footer{
+    background-color: #f1effd;
+}
+
+#loginBtn{
+    width: 100%;
+}
+
+.form-container {
+    margin-top: 20px;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ensure the body and html take full height */
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make the main content take available space */
+.login {
+    flex: 1;
+}
+
+/* Fix the footer at the bottom */
+.footer {
+    width: 100%;
+    position: relative;
+    bottom: 0;
+}
+
+#themeToggle {
+    background: none !important; /* Remove background */
+    border: none !important; /* Remove border */
+    box-shadow: none !important; /* Remove any shadow */
+    padding: 5px; /* Adjust padding if needed */
+}
+
+#themeIcon {
+    font-size: 24px; /* Adjust size if needed */
+    color: inherit !important; /* Inherit text color */
+}
+/* Light theme - icon should be black */
+body[data-bs-theme="light"] #themeIcon {
+    color: black !important;
+}
+
+/* Dark theme - icon should be white */
+body[data-bs-theme="dark"] #themeIcon {
+    color: white !important;
+}
+
+#otp-inputs {
+    gap: 10px;
+  }
+.otp-input {
+   width: 40px;
+   text-align: center;
+   font-size: 1.5rem;
+}
+
+#mobilenumber {
+    margin-bottom: 5px;
+}
+
+#getOtp {
+    margin-top: 5px;
+    display: block;
+    width: auto;
+    margin-bottom: 10px;
+}

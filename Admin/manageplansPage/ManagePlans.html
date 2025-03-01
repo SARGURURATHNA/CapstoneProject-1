@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Plans</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="ManagePlansStyles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <section class="sidebar-content d-flex min-vh-100">
+            <div class="sidebar">
+                <div>
+                    <ul class="nav flex-column">
+                        <a class="navbar-brand mb-3 ms-3" href="../dashboardPage/Admin.html"><span class="slanted">Mobi</span><span class="normal">Com</span></a>
+                        <li class="nav-item"><a class="nav-link" href="../dashboardPage/Admin.html">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../analysisPage/Analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../manageplansPage/ManagePlans.html">Manage Plans</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../managesubscribersPage/ManageSubscribers.html">Manage Subscribers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="../loginPage/Login.html" class="btn btn-danger btn-block">Log Out</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="All_Plans">
+            <div class="container mt-5">
+                <h3><strong>Manage Plans</strong></h3>
+        
+                
+                <ul class="nav nav-tabs mt-3">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">5G Packs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Monthly Packs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Annual Packs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Data Add-On</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Talktime</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">International Roaming</a></li>
+                </ul>
+
+                <!-- Add Plan Icon -->
+                <div class="d-flex align-items-center mb-2 mt-3">
+                    <span class="material-icons text-primary me-2" style="cursor: pointer; font-size: 24px;" onclick="addNewPlan()">
+                        add
+                    </span>
+                    <strong>Add New Plan</strong>
+                </div>
+        
+                <!-- Plans will be added here -->
+                <div class="row g-3 mt-3"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for Adding/Editing Plans -->
+<div class="modal fade" id="planModal" tabindex="-1" aria-labelledby="planModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="planModalLabel">Add New Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="planForm">
+                    <input type="hidden" id="editIndex" value=""> <!-- Hidden field for edit mode -->
+                    <div class="mb-3">
+                        <label for="planCost" class="form-label">Cost (₹)</label>
+                        <input type="number" class="form-control" id="planCost" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="planValidity" class="form-label">Validity</label>
+                        <input type="text" class="form-control" id="planValidity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="planData" class="form-label">Data</label>
+                        <input type="text" class="form-control" id="planData" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="planSms" class="form-label">SMS</label>
+                        <input type="text" class="form-control" id="planSms" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="planCalls" class="form-label">Calls</label>
+                        <input type="text" class="form-control" id="planCalls" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Plan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="ManagePlans.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../commonJS/SideBar.js"></script>
+</html>

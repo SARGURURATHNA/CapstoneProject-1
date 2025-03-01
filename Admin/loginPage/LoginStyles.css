@@ -1,0 +1,27 @@
+/* Apply Poppins font to the whole page */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: whitesmoke;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#submit{
+    width: 100%;
+}
+
+.form-container {
+    margin-top: 20px;
+    background-color: white;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+

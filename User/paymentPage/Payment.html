@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="PaymentStyles.css">
+</head>
+<body data-bs-theme="light">
+    <div class="payment-container">
+        <div class="container-flex">
+            <!-- Left Section: Payment Method Selection & Summary -->
+            <div class="left-section">
+                <h4>Select Payment Method</h4>
+                <div class="payment-methods">
+                    <img src="Assets/unified-payment-interface-upi-seeklogo.png" onclick="selectPaymentMethod(this, 'upiInput')" class="active">
+                    <img src="Assets/master-card-seeklogo.png" onclick="selectPaymentMethod(this, 'cardInputs')">
+                    <img src="Assets/payment-gateway_10200888.png" onclick="selectPaymentMethod(this, 'netBankingInputs')">
+                </div>
+
+                <div class="summary">
+                    <h5>Payment Summary</h5>
+                    <p>Subtotal: ₹<span id="amount"></span></p>
+                    <p>GST: ₹5.00</p>
+                    <h6>Total: ₹<span id="totalAmount"></span></h6>
+                </div>
+            </div>
+
+            <!-- Vertical Line Separator -->
+            <div class="vertical-line"></div>
+
+            <!-- Right Section: Payment Inputs -->
+            <div class="right-section">
+                <h4>Enter Payment Details</h4>
+                <!-- UPI ID Input -->
+                <div class="payment-inputs active" id="upiInput">
+                    <label for="upiId">UPI ID</label>
+                    <input type="text" id="upiId" placeholder="Eg:name12@axl">
+                </div>
+
+                <!-- Credit/Debit Card Inputs -->
+                <div class="payment-inputs" id="cardInputs">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="Enter Card Number" maxlength="16">
+
+                    <label for="expirydate">Expiry Date</label>
+                    <input type="text" id="expirydate" placeholder="MM/YYYY">
+
+                    <label for="pin">PIN</label>
+                    <input type="password" id="pin" placeholder="Enter PIN" maxlength="4">
+                </div>
+
+                <!-- Net Banking Inputs -->
+                <div class="payment-inputs" id="netBankingInputs">
+                    <label for="bank">Select your Bank</label>
+                    <select id="bank">
+                        <option value="">Select a Bank</option>
+                        <option>State Bank of India</option>
+                        <option>HDFC Bank</option>
+                        <option>Axis Bank</option>
+                        <option>Others</option>
+                    </select>
+
+                    <label for="customerName">Username</label>
+                    <input type="text" id="customerName" placeholder="Enter your username">
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+
+                <!-- Pay and Cancel Buttons -->
+                <div class="d-flex justify-content-between mt-3">
+                    <button class="btn btn-success w-50 me-2" onclick="processPayment()">Pay</button>
+                    <button class="btn btn-danger w-50" onclick="goToHome()">Cancel</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+<div class="modal fade" id="paymentSuccessModal" tabindex="-1" aria-labelledby="paymentSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-black" id="paymentSuccessModalLabel">Payment Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <span class="badge bg-success rounded-circle p-3">
+                        <i class="bi bi-check-lg fs-3"></i>
+                    </span>
+                </div>
+                <h4 class="text-success">Your payment was successfully processed</h4>
+                <div class="alert alert-success mt-3">
+                    <strong>Amount ₹</strong> <span id="modalAmount" class="ms-2"></span>
+                </div>
+                <table class="table table-bordered">
+                    <tr><td><strong>Transaction ID</strong></td><td id="modalTransactionId"></td></tr>
+                    <tr><td><strong>Payment Mode</strong></td><td id="modalPaymentMethod"></td></tr>
+                    <tr><td><strong>Date</strong></td><td id="modalDate"></td></tr>
+                    <tr><td><strong>Time</strong></td><td id="modalTime"></td></tr>
+                </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" onclick="goToHome()">Back to Homepage</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="Payment.js"></script>
+<script src="../commonJS/Theme.js"></script>
+</body>
+</html>
