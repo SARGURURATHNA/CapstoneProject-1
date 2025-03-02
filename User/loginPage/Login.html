@@ -46,40 +46,48 @@
         </nav>
     </header>
 
-    <section class="login">
-    <div class="d-flex flex-column justify-content-center align-items-center vh-100 mt-5">
-        <div class="form-container p-5 border rounded shadow">
-            <form id="user_form">
-                <h3 class="text-center">Welcome Back!</h3>
-                <h6 class="d-flex justify-content-center">Use your credentials to login</h6>
-                <div class="mt-4">
-                    <label class="d-block" for="mobilenumber">Mobile Number</label>
-                    <input class="rounded mt-2" id="mobilenumber" type="tel" name="mobilenumber" placeholder="Enter mobile number" style="width: 100%;"> <br>
-                    <span id="mobileErr" style="color: red; display: block; max-width: 200px; word-wrap: break-word;"></span>
-                    <button class="btn btn-success" id="getOtp" type="button">Get OTP</button>
+    <section class="login vh-100 d-flex flex-column">
+        <div class="container-fluid flex-grow-1 d-flex align-items-center">
+            <div class="row w-100">
+                <!-- Image Section -->
+                <div class="col-md-6 d-flex">
+                    <img src="Assets/user_login_img.jpg" alt="Login Image" class="img w-100">
                 </div>
-
-                <div class="">
-                    <label class="d-block" for="otp">OTP</label>
-                    <div id="otp-inputs" class="d-flex justify-content-between mt-2">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                        <input class="rounded otp-input" type="text" maxlength="1">
-                      </div>
-                    <span id="otpErr" style="color: red; display: block; max-width: 200px; word-wrap: break-word;"></span> <br>
+                <!-- Form Section -->
+                <div class="col-md-6 d-flex align-items-center justify-content-center">
+                    <div class="form-container p-5 border rounded shadow w-75">
+                        <form id="user_form">
+                            <h3 class="text-center">Welcome Back!</h3>
+                            <h6 class="d-flex justify-content-center">Use your credentials to login</h6>
+                            <div class="mt-4">
+                                <label class="d-block" for="mobilenumber">Mobile Number</label>
+                                <input class="form-control mt-2" id="mobilenumber" type="tel" name="mobilenumber" placeholder="Enter mobile number">
+                                <span id="mobileErr" class="text-danger d-block"></span>
+                                <button class="btn btn-success mt-2 w-100" id="getOtp" type="button">Get OTP</button>
+                            </div>
+                            <div class="mt-3">
+                                <label class="d-block" for="otp">OTP</label>
+                                <div id="otp-inputs" class="d-flex justify-content-between mt-2">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                    <input class="otp-input form-control text-center" type="text" maxlength="1">
+                                </div>
+                                <span id="otpErr" class="text-danger d-block"></span>
+                            </div>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button class="btn btn-primary w-100" id="loginBtn" type="submit">Login</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-center">
-                    <button class="rounded btn btn-primary" id="loginBtn" type="submit">Login</button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
     </section>
 
-    <footer class="footer py-3">
+    <footer class="footer py-3 mt-auto">
         <div class="container">
             <div class="row align-items-center text-center text-md-start">
                 <!-- Left Section -->
