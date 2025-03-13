@@ -104,8 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (plansData[category]) {
             plansData[category].forEach(plan => {
                 const benefitsHTML = plan.benefits 
-                ?  `<div class="benefit-badge">
-                ${plan.benefits}
+                ? `<div class="benefit-badge position-absolute top-0 end-0 m-2 text-white d-flex align-items-center rounded-pill px-3 py-1" style="z-index:1;">
+                        <span class="me-2">${plan.benefits}</span>
+                        <button class="btn btn-sm p-0 border-0 bg-transparent text-white" onclick="showBenefitsModal('${plan.benefits}')">
+                            <i class="bi bi-arrow-right fs-5"></i>
+                        </button>
                 </div>`
                 : "";
                 const planHTML = `
@@ -161,3 +164,48 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+function showBenefitsModal(benefit) {
+    const subscriptionImages = document.getElementById("subscriptionImages");
+    const packDetailsTable = document.getElementById("packDetailsTable").querySelector("tbody");
+  
+    // Clear previous content
+    subscriptionImages.innerHTML = "";
+    packDetailsTable.innerHTML = "";
+  
+    // Parse the benefit string
+    const [subsString, validity, totalData, cost] = benefit.split("|");
+    const subscriptions = subsString.split(",");
+  
+    // Render subscription logos
+    subscriptions.forEach(sub => {
+      const img = document.createElement("img");
+      img.src = `assets/subscriptions/${sub.trim().toLowerCase()}.png`; // Adjust path if needed
+      img.alt = sub.trim();
+      img.style.height = "40px";
+      img.style.objectFit = "contain";
+      img.classList.add("me-2");
+      subscriptionImages.appendChild(img);
+    });
+  
+    // Define pack detail entries
+    const details = [
+      { label: "Cost", value: cost },
+      { label: "Validity", value: validity },
+      { label: "Total Data", value: totalData },
+    ];
+  
+    // Add rows to table
+    details.forEach(detail => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="fw-bold">${detail.label}</td>
+        <td>${detail.value}</td>
+      `;
+      packDetailsTable.appendChild(row);
+    });
+  
+    // Show modal
+    const benefitModal = new bootstrap.Modal(document.getElementById('benefitModal'));
+    benefitModal.show();
+}  
