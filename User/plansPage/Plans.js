@@ -25,62 +25,10 @@ function selectPlan(cost, validity, data, sms, calls) {
     window.location.href = url;
 }
 
-const plansData = {
-    "5G Packs": [
-        { cost: "2025", validity: "200 Days", data: "2.5 GB/Day", sms: "150 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "999", validity: "98 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "749", validity: "98 Days", data: "1 GB/Day", sms: "200 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "679", validity: "110 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "599", validity: "90 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "459", validity: "85 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "349", validity: "70 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" },
-        { cost: "399", validity: "90 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Unlimited 5G" }
-    ],
-    "Monthly Packs": [
-        { cost: "445", validity: "28 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"JioHotstar included" },
-        { cost: "549", validity: "24 Days", data: "2.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Netflix included" },
-        { cost: "449", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "409", validity: "20 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "389", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "349", validity: "24 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"SonyLiv included" },
-        { cost: "359", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited",benefits:"Zee5 included" },
-        { cost: "309", validity: "20 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" }
-    ],
-    "Annual Packs": [
-        { cost: "1299", validity: "250 Days", data: "2 GB/Day", sms: "200 SMS/day", calls: "Unlimited",benefits:"Zee5 included" },
-        { cost: "1499", validity: "266 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"JioHotstar included" },
-        { cost: "1666", validity: "356 Days", data: "2.5 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "2500", validity: "365 Days", data: "3 GB/Day", sms: "200 SMS/day", calls: "Unlimited" ,benefits:"Netflix included"},
-        { cost: "3500", validity: "365 Days", data: "3.5 GB/Day", sms: "200 SMS/day", calls: "Unlimited",benefits:"AmazonPrime included" },
-        { cost: "2000", validity: "356 Days", data: "24 GB", sms: "200 SMS/day", calls: "Unlimited",benefits:"SonyLiv included" },
-        { cost: "2200", validity: "346 Days", data: "2 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "1999", validity: "356 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited",benefits:"Aha included" }
-    ],
-    "Data Add-On": [
-        { cost: "198", validity: "Existing", data: "2 GB/Day", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "19", validity: "Existing", data: "1 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "39", validity: "Existing", data: "2 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "69", validity: "Existing", data: "3 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "79", validity: "Existing", data: "4 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "110", validity: "Existing", data: "6 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "129", validity: "Existing", data: "8 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "169", validity: "Existing", data: "12 GB", sms: "Existing Pack", calls: "Existing Pack" }
-    ],
-    "Talktime": [
-        { cost: "100", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹81.75 Talktime" },
-        { cost: "500", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹423.73 Talktime" },
-        { cost: "600", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹533.63 Talktime" },
-        { cost: "750", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹620.83 Talktime" },
-        { cost: "860", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹795.93 Talktime" },
-        { cost: "900", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹820.63 Talktime" },
-        { cost: "1000", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹950.73 Talktime" },
-        { cost: "1200", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹1100.73 Talktime" }
-    ]
-};
-
 document.addEventListener("DOMContentLoaded", function () {
     const planContainer = document.querySelector(".row.g-3");
     const tabs = document.querySelectorAll(".nav-tabs .nav-link");
+    let plansData = {};
 
     // Function to get URL parameter
     function getQueryParam(param) {
@@ -88,8 +36,35 @@ document.addEventListener("DOMContentLoaded", function () {
         return urlParams.get(param);
     }
 
+    async function fetchPlans(category) {
+        try {
+            const response = await fetch(`http://localhost:8083/api/plans/category?category=${encodeURIComponent(category)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const plans = await response.json();
+            return plans;
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+            return [];
+        }
+    }
+
+    function formatOttBenefits(plan) {
+        if (!plan.ottNames || plan.ottNames.length === 0) {
+            return null;
+        }
+        
+        const otts = plan.ottNames.join(',');
+        const categories = plan.ottCategories ? plan.ottCategories.join(',') : '';
+        return `${otts}|${categories}|${plan.validity}|${plan.data}|₹${plan.price}`;
+    }
+
     // Function to display plans
-    function displayPlans(category) {
+    async function displayPlans(category) {
+        if (!plansData[category]) {
+            plansData[category] = await fetchPlans(category);
+        }
         planContainer.innerHTML = ""; // Clear existing plans
 
         // Find the tab with the matching category and make it active
@@ -100,42 +75,59 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
+
         // Check if plans exist for the category
-        if (plansData[category]) {
+        if (plansData[category] && plansData[category].length > 0) {
             plansData[category].forEach(plan => {
-                const benefitsHTML = plan.benefits 
+                const benefits = formatOttBenefits(plan);
+                const benefitsHTML = benefits 
                 ? `<div class="benefit-badge position-absolute top-0 end-0 m-2 text-white d-flex align-items-center rounded-pill px-3 py-1" style="z-index:1;">
-                        <span class="me-2">${plan.benefits}</span>
-                        <button class="btn btn-sm p-0 border-0 bg-transparent text-white" onclick="showBenefitsModal('${plan.benefits}')">
+                        <span class="me-2">${plan.badge}</span>
+                        <button class="btn btn-sm p-0 border-0 bg-transparent text-white" onclick="showBenefitsModal('${benefits}')">
                             <i class="bi bi-arrow-right fs-5"></i>
                         </button>
                 </div>`
                 : "";
+                let sms = plan.sms;
+                let calls = plan.calls;
+                let data = plan.data;
+                let validity = plan.validity;
+
+                // if (category === "Data Add-on") {
+                    if (!sms || sms.trim() === "") sms = "Existing pack";
+                    if (!calls || calls.trim() === "") calls = "Existing pack";
+                // }
+
+                if (category === "Talktime") {
+                    if (!data || data.trim() === "") data = "N/A";
+                    if (validity === null || validity === undefined || validity === 0) validity = "N/A";
+                    calls = "₹"+calls + " Talktime";
+                }
                 const planHTML = `
                 <div class="col-md-3 col-sm-6 g-5">
                     <div class="plan-card h-100 text-center position-relative">
                     ${benefitsHTML}
-                        <h3 class="price fw-bold text-start">₹${plan.cost}</h3>
+                        <h3 class="price fw-bold text-start">₹${plan.price}</h3>
                         <div class="d-flex flex-column align-items-center gap-1">
                             <div class="d-flex justify-content-between w-100">
                                 <p class="fw-bold">Validity</p>
-                                <p>${plan.validity}</p>
+                                <p>${validity}</p>
                             </div>
                             <div class="d-flex justify-content-between w-100">
                                 <p class="fw-bold">Data</p>
-                                <p>${plan.data}</p>
+                                <p>${data}</p>
                             </div>
                             <div class="d-flex justify-content-between w-100">
                                 <p class="fw-bold">SMS</p>
-                                <p>${plan.sms}</p>
+                                <p>${sms}</p>
                             </div>
                             <div class="d-flex justify-content-between w-100">
                                 <p class="fw-bold">Calls</p>
-                                <p>${plan.calls}</p>
+                                <p>${calls}</p>
                             </div>
                             
                         </div>
-                        <button class="btn btn-buy w-100 mt-3" onclick="selectPlan('${plan.cost}', '${plan.validity}', '${plan.data}', '${plan.sms}', '${plan.calls}')">Buy</button>
+                        <button class="btn btn-buy w-100 mt-3" onclick="selectPlan('${plan.price}', '${validity}', '${data}', '${sms}', '${calls}')">Buy</button>
                     </div>
                 </div>
                 `;
@@ -146,18 +138,38 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Get category from URL
-    let selectedCategory = getQueryParam("category") || "5G Packs";
+    // Function to initialize category tabs
+    async function initializeTabs() {
+        try {
+            // Fetch all unique categories
+            const response = await fetch("http://localhost:8083/api/plans/categories");
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const categoryList = await response.json();
+            const categories = new Set(categoryList);
+            
+            // Get category from URL or use first available
+            let selectedCategory = getQueryParam("category");
+            
+            if (!selectedCategory || !categories.has(selectedCategory)) {
+                selectedCategory = categories.has("5G Packs") ? "5G Packs" : categoryList[0];
+            }
+            await displayPlans(selectedCategory);
+        } catch (error) {
+            console.error("Error initializing tabs:", error);
+            planContainer.innerHTML = "<p class='col-12 text-center'>Error loading plans. Please try again later.</p>";
+        }
+    }
 
-    // Display the correct plans on page load
-    displayPlans(selectedCategory);
+    // Initialize the page
+    initializeTabs();
 
     // Handle tab click event (switching categories within the page)
     tabs.forEach(tab => {
         tab.addEventListener("click", function (event) {
             event.preventDefault();
-            tabs.forEach(t => t.classList.remove("active"));
-            this.classList.add("active");
             const category = this.innerText.trim();
             displayPlans(category);
             history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
@@ -166,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function showBenefitsModal(benefit) {
+    const [subsString, categoriesString, validity, totalData, cost] = benefit.split("|");
     const subscriptionImages = document.getElementById("subscriptionImages");
     const packDetailsTable = document.getElementById("packDetailsTable").querySelector("tbody");
   
@@ -173,26 +186,34 @@ function showBenefitsModal(benefit) {
     subscriptionImages.innerHTML = "";
     packDetailsTable.innerHTML = "";
   
-    // Parse the benefit string
-    const [subsString, validity, totalData, cost] = benefit.split("|");
     const subscriptions = subsString.split(",");
+    const categories = categoriesString.split(",");
   
     // Render subscription logos
-    subscriptions.forEach(sub => {
-      const img = document.createElement("img");
-      img.src = `assets/subscriptions/${sub.trim().toLowerCase()}.png`; // Adjust path if needed
-      img.alt = sub.trim();
-      img.style.height = "40px";
-      img.style.objectFit = "contain";
-      img.classList.add("me-2");
-      subscriptionImages.appendChild(img);
+    subscriptions.forEach((sub, i) => {
+        const div = document.createElement("div");
+        div.classList.add("text-center", "me-3");
+
+        const img = document.createElement("img");
+        img.src = `Assets/${sub.trim().toLowerCase()}.png`;
+        img.alt = sub.trim();
+        img.style.height = "40px";
+        img.classList.add("d-block", "mx-auto");
+
+        const label = document.createElement("div");
+        label.innerText = categories[i]?.charAt(0).toUpperCase() + categories[i]?.slice(1);
+        label.classList.add("small", "text-muted");
+
+        div.appendChild(img);
+        div.appendChild(label);
+        subscriptionImages.appendChild(div);
     });
   
     // Define pack detail entries
     const details = [
       { label: "Cost", value: cost },
       { label: "Validity", value: validity },
-      { label: "Total Data", value: totalData },
+      { label: "Data", value: totalData },
     ];
   
     // Add rows to table
