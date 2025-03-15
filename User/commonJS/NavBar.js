@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateDropdown() {
         dropdownMenu.innerHTML = ""; // Clear previous options
 
-        if (localStorage.getItem("isLoggedIn")) {
+        if (sessionStorage.getItem("isLoggedIn")) {
             // User is logged in: Show "My Account" and "Logout"
             dropdownMenu.innerHTML = `
                 <li><a class="dropdown-item" href="../rechargehistoryPage/RechargeHistory.html">My Account</a></li>
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
 
             document.getElementById("logoutBtn").addEventListener("click", function () {
-                localStorage.removeItem("isLoggedIn"); // Remove login state
+                sessionStorage.removeItem("isLoggedIn"); // Remove login state
                 updateDropdown(); // Refresh dropdown
                 window.location.href = "../indexPage/Home.html";
             });

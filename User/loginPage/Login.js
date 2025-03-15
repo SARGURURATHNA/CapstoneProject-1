@@ -5,23 +5,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const mobileErr = document.getElementById("mobileErr");
     const otpErr = document.getElementById("otpErr");
 
-    getOtpButton.addEventListener("click", function (event) {
+    const backendBaseUrl = "http://localhost:8083/api/users"; // your backend base URL
+
+    // Check if mobile number exists
+    async function isMobileNumberRegistered(mobileNumber) {
+        const response = await fetch(`${backendBaseUrl}/exists-by-mobile/${mobileNumber}`);
+        const exists = await response.json();
+        return exists;
+    }
+
+    getOtpButton.addEventListener("click",async function (event) {
         const mobileNumber = mobileInput.value.trim();
 
+        const exists = await isMobileNumberRegistered(mobileNumber);
         if (mobileNumber === "") {
             mobileErr.textContent = "Enter mobile number to get OTP.";
             return;
         } else if (!/^\d{10}$/.test(mobileNumber)) {
             mobileErr.textContent = "Invalid mobile number. Enter a 10-digit number.";
             return;
-        } else {
+        } 
+        else  if (!exists) {
+            mobileErr.textContent = "Mobile number not found in system.";
+            return;
+        }
+        else {
             mobileErr.textContent = "";
             alert("OTP sent successfully!");
             // add OTP generation logic
         }
     });
 
-    userForm.addEventListener("submit", function (event) {
+    userForm.addEventListener("submit", async function (event) {
         event.preventDefault(); 
 
         const mobileNumber = mobileInput.value.trim();
@@ -54,8 +69,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     
         if(!isValid) return;
+
+        const exists = await isMobileNumberRegistered(mobileNumber);
+        if (!exists) {
+            mobileErr.textContent = "Mobile number not found in system.";
+            return;
+        }
             alert("Login successful! Redirecting to Plans page...");
-            localStorage.setItem("isLoggedIn", "true"); // Store login state
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("mobileNumber",mobileNumber);
             window.location.href = "../plansPage/Plans.html";
     });
 });
