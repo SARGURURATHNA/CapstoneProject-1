@@ -75,6 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
             mobileErr.textContent = "Mobile number not found in system.";
             return;
         }
+        else{
+            const response = await fetch(`${backendBaseUrl}/mobile/${mobileNumber}`);
+            const user = await response.json();
+            sessionStorage.setItem("loggedInUser",JSON.stringify(user));
+        }
             alert("Login successful! Redirecting to Plans page...");
             sessionStorage.setItem("isLoggedIn", "true");
             sessionStorage.setItem("mobileNumber",mobileNumber);

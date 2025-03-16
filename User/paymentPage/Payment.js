@@ -3,6 +3,7 @@ window.onload=function getQueryParams() {
 
     let cost = Number(params.get("cost")) || 0;
     let planDetails = {
+        planId: Number(params.get("planId")),
         cost: cost,
         validity: params.get("validity"),
         data: params.get("data"),
@@ -10,7 +11,7 @@ window.onload=function getQueryParams() {
         calls: params.get("calls")
     };
     document.getElementById("amount").textContent = planDetails.cost;
-    document.getElementById("totalAmount").textContent = planDetails.cost + 5;
+    document.getElementById("totalAmount").textContent = planDetails.cost;
     localStorage.setItem("currentPlan", JSON.stringify(planDetails));
 }
 
@@ -78,34 +79,34 @@ function processPayment() {
 }
 
 function saveTransaction(amount, date, transactionId, paymentMode) {
-let transactions = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-
-let monthYear = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
 
 //changes
 let planDetails = JSON.parse(localStorage.getItem("currentPlan"));
 
-// Find existing month group or create a new one
-let monthGroup = transactions.find(entry => entry.month === monthYear);
-if (!monthGroup) {
-monthGroup = { month: monthYear, recharges: [] };
-transactions.push(monthGroup);
+// Save to backend
+let user = JSON.parse(sessionStorage.getItem("loggedInUser")); // assuming you store user info like this
+if (!user || !user.userId) {
+    console.error("User not logged in");
+    return;
 }
 
-// Add new recharge entry
-monthGroup.recharges.push({ 
-cost: amount, 
-validity: planDetails?.validity || "N/A", 
-data: planDetails?.data || "N/A", 
-sms: planDetails?.sms || "N/A", 
-calls: planDetails?.calls || "N/A", 
-date, 
-transactionId, 
-paymentMode 
-});
+const query = `?userId=${user.userId}&planId=${planDetails.planId}&amount=${amount}&paymentMode=${paymentMode}`;
 
-// Save back to localStorage
-localStorage.setItem("rechargeHistory", JSON.stringify(transactions));
+fetch(`http://localhost:8083/api/recharge/buy${query}`, {
+    method: "POST"
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error("Failed to process recharge");
+    }
+    return response.json();
+})
+.then(data => {
+    console.log("Recharge saved to backend:", data);
+})
+.catch(error => {
+    console.error("Error saving recharge:", error);
+});
 }
 
 function goToHome() {

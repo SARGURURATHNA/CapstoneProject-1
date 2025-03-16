@@ -1,26 +1,25 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    const modalEl = document.getElementById("planModal");
+    planModal = new bootstrap.Modal(modalEl);
+    let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
     const historyContainer = document.getElementById("historyContainer");
-    let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
+        fetch(`http://localhost:8083/api/recharge/history?userId=${user.userId}`)
+        .then(res => res.json())
+        .then(history => {
+            if (history.length === 0) {
+                document.getElementById("historyContainer").innerHTML = "<p>No history found</p>";
+                return;
+            }
 
-    if (rechargeHistory.length === 0) {
-        historyContainer.innerHTML = "<p class='text-center'>No recharge history available.</p>";
-        return;
-    }
-
-    rechargeHistory.forEach(({ month, recharges }) => {
-        const monthHeader = document.createElement("h5");
-        monthHeader.className = "recharge-month";
-        monthHeader.innerText = month;
-        historyContainer.appendChild(monthHeader);
-
-        recharges.forEach(({ cost, validity, data, sms, calls, date, transactionId, paymentMode }) => {
+            // Loop over history and create HTML cards as before
+            history.forEach(item => {
             const card = document.createElement("div");
             card.className = "card mb-3 p-3";
             card.innerHTML = `
                 <div class="card-content">
-                <h4 class="cost">₹${cost}</h4>
-                <p class="recharge_date">${date}</p>
+                <h4 class="cost">₹${item.cost}</h4>
+                <p class="recharge_date">${item.rechargeDate}</p>
                 <button class="view-btn btn btn-primary rounded">View Details</button>
                 <button class="download-btn btn btn-primary rounded">Download Invoice<span class="material-symbols-outlined">download</span></button>
                 </div>
@@ -30,11 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 <table class="transaction-table">
                 <tr>
                     <td><strong>Transaction ID</strong></td>
-                    <td id="transactionId">${transactionId}</td>
+                    <td id="transactionId">${item.transactionRef}</td>
                 </tr>
                 <tr>
                     <td><strong>Payment Mode</strong></td>
-                    <td id="paymentMethod">${paymentMode}</td>
+                    <td id="paymentMethod">${item.paymentMode}</td>
+                </tr>
+                <tr>
+                    <td><strong>Payment Status</strong></td>
+                    <td id="paymentMethod">${item.paymentStatus}</td>
                 </tr>
                 </table>
 
@@ -42,23 +45,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 <table class="plan-table">
                     <tr>
                         <td><strong>Cost</strong></td>
-                        <td id="planCost">₹${cost}</td>
+                        <td id="planCost">₹${item.cost}</td>
                     </tr>
                     <tr>
                         <td><strong>Validity</strong></td>
-                        <td id="planValidity">${validity}</td>
+                        <td id="planValidity">${item.validity}</td>
                     </tr>
                     <tr>
                         <td><strong>Data</strong></td>
-                        <td id="planData">${data}</td>
+                        <td id="planData">${item.data}</td>
                     </tr>
                     <tr>
                         <td><strong>SMS</strong></td>
-                        <td id="planSms">${sms}</td>
+                        <td id="planSms">${item.sms}</td>
                     </tr>
                     <tr>
                         <td><strong>Calls</strong></td>
-                        <td id="planCalls">${calls}</td>
+                        <td id="planCalls">${item.calls}</td>
                     </tr>
                 </table>
                 </div>
@@ -74,15 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const downloadBtn = card.querySelector(".download-btn");
             downloadBtn.addEventListener("click", function () {
                 downloadInvoice({
-                    month,
-                    cost,
-                    validity,
-                    data,
-                    sms,
-                    calls,
-                    date,
-                    transactionId,
-                    paymentMode
+                    // month,
+                    cost:item.cost,
+                    validity:item.validity,
+                    data:item.data,
+                    sms:item.sms,
+                    calls:item.calls,
+                    date:item.rechargeDate,
+                    transactionId:item.transactionRef,
+                    paymentMode:item.paymentMode,
+                    paymentStatus:item.paymentStatus
                 });
             });
 
@@ -90,8 +94,57 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    fetch(`http://localhost:8083/api/recharge/current-plan/details?userId=${user.userId}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("status-badge").innerText = data.status;
+            document.getElementById("current_plan_cost").innerText = `₹${data.cost}`;
+            
+            const expiryDate = new Date(data.expiryDate);
+            const formattedDate = expiryDate.toLocaleString('default', {year:'numeric', month: 'long', day: 'numeric' });
 
-    function downloadInvoice({ month, cost, validity, data, sms, calls, date, transactionId, paymentMode }) {
+            document.getElementById("current_plan_expiry").innerText = formattedDate;
+        })
+        .catch(err => {
+            console.error("Error loading current plan:", err);
+        });
+
+        const viewPlanBtn = document.querySelector(".current-plan button");
+
+        viewPlanBtn.addEventListener("click", () => {
+
+            if (!user || !user.userId) {
+                console.error("User not found in sessionStorage");
+                return;
+            }
+
+            fetch(`http://localhost:8083/api/recharge/current-plan/details?userId=${user.userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    // Set the values in the modal
+                    document.getElementById("current_plan_cost").innerText = `₹${data.cost}`;
+                    document.getElementById("modalCost").innerText = `₹${data.cost}`;
+                    document.getElementById("modalValidity").innerText = `${data.validity} days`;
+                    document.getElementById("modalData").innerText = data.data;
+                    document.getElementById("modalSms").innerText = `${data.sms} SMS/day`;
+                    document.getElementById("modalCalls").innerText = data.calls;
+                    planModal.show();
+                })
+                .catch(error => {
+                    console.error("Error fetching plan details:", error);
+                });
+        });
+
+        modalEl.addEventListener("hidden.bs.modal", () => {
+            //Clean up backdrop manually just in case
+            document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+            document.body.classList.remove("modal-open");
+            document.body.style.overflow = "auto";
+        });
+
+
+
+    function downloadInvoice({cost, validity, data, sms, calls, date, transactionId, paymentMode, paymentStatus }) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
     
@@ -99,19 +152,18 @@ document.addEventListener("DOMContentLoaded", function () {
         doc.setFontSize(18);
         doc.text("Invoice", 90, 10);
     
-        // Define common column styles to ensure uniform width
         const columnStyles = {
-            0: { cellWidth: 50 }, // First column width (Labels)
-            1: { cellWidth: 100 } // Second column width (Values)
+            0: { cellWidth: 50 },
+            1: { cellWidth: 100 }
         };
     
         // Transaction Details Data
         const transactionData = [
             [{ content: "Transaction Details", colSpan: 2, styles: { halign: "center", fontStyle: "bold", fillColor: [200, 200, 200] } }],
             ["Date", date],
-            ["Month", month],
             ["Transaction ID", transactionId],
-            ["Payment Mode", paymentMode]
+            ["Payment Mode", paymentMode],
+            ["Payment Status", paymentStatus]
         ];
     
         // Add Transaction Details Table
@@ -155,23 +207,36 @@ document.addEventListener("DOMContentLoaded", function () {
         doc.save("Invoice.pdf");
     }
     
-    
-    
+    const storedUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    const userId = storedUser?.userId;
 
-    // Load user details from localStorage if available
-    let userDetails =  {
-        name: "John",
-        mobile: "7894561230",
-        address: "123 Street, City",
-        dob: "2000-01-01",
-        email: "john@example.com"
-    };
+    if (!userId) {
+        console.error("No userId found in sessionStorage.");
+        return;
+    }
 
-    document.getElementById("editName").value = userDetails.name;
-    document.getElementById("editMobile").value = userDetails.mobile;
-    document.getElementById("editAddress").value = userDetails.address;
-    document.getElementById("editDob").value = userDetails.dob;
-    document.getElementById("editEmail").value = userDetails.email;
+    fetch(`http://localhost:8083/api/users/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            // Populate profile
+            document.getElementById("userName").textContent = user.firstName + " " + user.lastName;
+            document.getElementById("editfirstName").value = user.firstName;
+            document.getElementById("editlastName").value = user.lastName;
+            document.getElementById("editMobile").value = user.mobileNumber;
+            document.getElementById("editalternateMobile").value = user.alternateMobile;
+            document.getElementById("editDob").value = user.dob;
+            document.getElementById("editEmail").value = user.email;
+
+            // Assuming single address
+            const address = user.addresses[0];
+            if (address) {
+                const fullAddress = `${address.doorNo}, ${address.street}, ${address.city}, ${address.district}, ${address.state} - ${address.pincode}`;
+                document.getElementById("editAddress").value = fullAddress;
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching user details:", error);
+        });
 
     // Save only email when the Save Changes button is clicked
     document.getElementById("saveChanges").addEventListener("click", function() {

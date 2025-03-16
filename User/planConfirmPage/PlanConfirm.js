@@ -10,13 +10,14 @@ function getQueryParams() {
 window.onload = getQueryParams;
     
 function goToPayment(){
+    let planId = new URLSearchParams(window.location.search).get("planId");
     let cost = document.getElementById("cost").textContent;
     let validity = document.getElementById("validity").textContent;
     let data = document.getElementById("data").textContent;
     let sms = document.getElementById("sms").textContent;
     let calls = document.getElementById("calls").textContent;
     
-    const url = `../paymentPage/Payment.html?cost=${cost}&validity=${validity}&data=${data}&sms=${sms}&calls=${calls}`;
+    const url = `../paymentPage/Payment.html?planId=${planId}&cost=${cost}&validity=${validity}&data=${data}&sms=${sms}&calls=${calls}`;
     window.location.href = url;
 }
     

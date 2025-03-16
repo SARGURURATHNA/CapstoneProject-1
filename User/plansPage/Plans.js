@@ -6,7 +6,7 @@ window.onload=function(){
 
 
 function isLoggedIn() {
-    return localStorage.getItem("isLoggedIn") === "true";
+    return sessionStorage.getItem("isLoggedIn") === "true";
 }
 
 function showLoginPopup() {
@@ -14,14 +14,14 @@ function showLoginPopup() {
     loginModal.show();
 }
 
-function selectPlan(cost, validity, data, sms, calls) {
+function selectPlan(planId, cost, validity, data, sms, calls) {
 
     if(!isQuickRecharge){
     if (!isLoggedIn()) {
         showLoginPopup();
         return;
     }}
-    const url = `../planConfirmPage/PlanConfirm.html?cost=${encodeURIComponent(cost)}&validity=${encodeURIComponent(validity)}&data=${encodeURIComponent(data)}&sms=${encodeURIComponent(sms)}&calls=${encodeURIComponent(calls)}`;
+    const url = `../planConfirmPage/PlanConfirm.html?planId=${planId}&cost=${encodeURIComponent(cost)}&validity=${encodeURIComponent(validity)}&data=${encodeURIComponent(data)}&sms=${encodeURIComponent(sms)}&calls=${encodeURIComponent(calls)}`;
     window.location.href = url;
 }
 
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             
                         </div>
-                        <button class="btn btn-buy w-100 mt-3" onclick="selectPlan('${plan.price}', '${validity}', '${data}', '${sms}', '${calls}')">Buy</button>
+                        <button class="btn btn-buy w-100 mt-3" onclick="selectPlan(${plan.planId},'${plan.price}', '${validity}', '${data}', '${sms}', '${calls}')">Buy</button>
                     </div>
                 </div>
                 `;

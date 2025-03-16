@@ -81,20 +81,23 @@
         </div>
     
         <!-- Current Plan -->
-        <div class="current-plan p-3 shadow rounded">
+        <div class="current-plan p-3 shadow rounded position-relative">
+            <!-- Badge -->
+            <span class="badge position-absolute top-0 end-0 m-2" id="status-badge"></span>
+        
             <h4>Current Plan</h4>
             <div class="d-flex justify-content-between">
                 <div>
                     <h6>Plan</h6>
-                    <p>₹349</p>
+                    <p id="current_plan_cost"></p>
                 </div>
                 <div>
                     <h6>Expiry Date</h6>
-                    <p>March 17</p>
+                    <p id="current_plan_expiry"></p>
                 </div>
             </div>
             <button class="btn btn-primary w-100 mt-2">View Plan</button>
-        </div>
+        </div>        
     </section>
     
 
@@ -116,24 +119,32 @@
                 <div class="modal-body">
                     <form id="editForm">
                         <div class="mb-3">
-                            <label for="editName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="editName" value="John" readonly>
+                            <label for="editfirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="editfirstName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editlastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="editlastName" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="editMobile" class="form-label">Mobile Number</label>
-                            <input type="text" class="form-control" id="editMobile" value="4569871230" readonly>
+                            <input type="text" class="form-control" id="editMobile" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editalternateMobile" class="form-label">Alternate Mobile Number</label>
+                            <input type="text" class="form-control" id="editalternateMobile" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="editAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="editAddress" value="123 Street, City" readonly>
+                            <input type="text" class="form-control" id="editAddress" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="editDob" class="form-label">Date of Birth</label>
-                            <input type="date" class="form-control" id="editDob" value="2000-01-01" readonly>
+                            <input type="date" class="form-control" id="editDob" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="editEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="editEmail" value="john@example.com">
+                            <input type="email" class="form-control" id="editEmail">
                         </div>
                     </form>
                 </div>
@@ -157,23 +168,23 @@
                 <table class="table table-bordered">
                     <tr>
                         <th>Cost</th>
-                        <td>₹349</td>
+                        <td id="modalCost">₹349</td>
                     </tr>
                     <tr>
                         <th>Validity</th>
-                        <td>70 days</td>
+                        <td id="modalValidity">70 days</td>
                     </tr>
                     <tr>
                         <th>Data</th>
-                        <td>1.5 GB/day</td>
+                        <td id="modalData">1.5 GB/day</td>
                     </tr>
                     <tr>
                         <th>SMS</th>
-                        <td>100 SMS/day</td>
+                        <td id="modalSms">100 SMS/day</td>
                     </tr>
                     <tr>
                         <th>Calls</th>
-                        <td>Unlimited</td>
+                        <td id="modalCalls">Unlimited</td>
                     </tr>
                 </table>
             </div>

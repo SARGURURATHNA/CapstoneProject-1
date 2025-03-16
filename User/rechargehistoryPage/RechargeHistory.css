@@ -314,3 +314,12 @@ body[data-bs-theme="dark"] #themeIcon {
 .text-end {
     text-align: right;
 }
+
+#status-badge {
+    background-color: #d4edda; /* Light green */
+    color: #155724; /* Dark green */
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.90rem;
+}
