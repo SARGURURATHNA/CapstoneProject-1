@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to initialize category tabs
     async function initializeTabs() {
+        const tabContainer = document.getElementById("categoryTabs");
         try {
             // Fetch all unique categories
             const response = await fetch("http://localhost:8083/api/plans/categories");
@@ -156,6 +157,34 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!selectedCategory || !categories.has(selectedCategory)) {
                 selectedCategory = categories.has("5G Packs") ? "5G Packs" : categoryList[0];
             }
+            categoryList.forEach((category, index) => {
+                const li = document.createElement("li");
+                li.className = "nav-item";
+    
+                const a = document.createElement("a");
+                a.className = "nav-link";
+                if (category === selectedCategory) {
+                    a.classList.add("active");
+                }
+    
+                a.href = "#";
+                a.innerText = category;
+    
+                a.addEventListener("click", async (e) => {
+                    e.preventDefault();
+    
+                    // Update active tab
+                    document.querySelectorAll("#categoryTabs .nav-link").forEach(link => link.classList.remove("active"));
+                    a.classList.add("active");
+
+                    history.pushState(null, "", `?category=${encodeURIComponent(category)}`);
+    
+                    await displayPlans(category);
+                });
+    
+                li.appendChild(a);
+                tabContainer.appendChild(li);
+            });
             await displayPlans(selectedCategory);
         } catch (error) {
             console.error("Error initializing tabs:", error);
@@ -167,14 +196,14 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeTabs();
 
     // Handle tab click event (switching categories within the page)
-    tabs.forEach(tab => {
-        tab.addEventListener("click", function (event) {
-            event.preventDefault();
-            const category = this.innerText.trim();
-            displayPlans(category);
-            history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
-        });
-    });
+    // tabs.forEach(tab => {
+    //     tab.addEventListener("click", function (event) {
+    //         event.preventDefault();
+    //         const category = this.innerText.trim();
+    //         displayPlans(category);
+    //         history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
+    //     });
+    // });
 });
 
 function showBenefitsModal(benefit) {

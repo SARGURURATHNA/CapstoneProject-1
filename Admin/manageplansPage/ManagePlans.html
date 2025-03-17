@@ -26,7 +26,7 @@
                     </ul>
                 </div>
                 <div>
-                    <a href="../loginPage/Login.html" class="btn btn-danger btn-block">Log Out</a>
+                    <a href="../loginPage/Login.html" class="btn btn-danger btn-block" onclick="handleLogout()">Log Out</a>
                 </div>
             </div>
         </section>
@@ -39,8 +39,8 @@
                         Add Plan
                     </button>
                 
-                <ul class="nav nav-tabs mt-3">
-                    <li class="nav-item">
+                <ul class="nav nav-tabs mt-3" id="categoryTabs">
+                    <!-- <li class="nav-item">
                       <a class="nav-link active" aria-current="page" href="#">5G Packs</a>
                     </li>
                     <li class="nav-item">
@@ -57,7 +57,7 @@
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#">International Roaming</a>
-                    </li>
+                    </li> -->
                   </ul>
                   <!-- Plans will be added here -->
                 <div class="row g-3 mt-3"></div>
@@ -116,7 +116,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="planValidity" class="form-label">Validity</label>
-                                <input type="text" class="form-control" id="planValidity" required>
+                                <input type="number" class="form-control" id="planValidity" required>
                             </div>
                             <div class="mb-3">
                                 <label for="planData" class="form-label">Data</label>

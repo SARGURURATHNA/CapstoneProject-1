@@ -138,3 +138,7 @@ function downloadChartData(chartId) {
     // Download Excel file
     XLSX.writeFile(wb, fileName);
 }
+
+function handleLogout() {
+    sessionStorage.clear(); // This removes ALL session storage keys
+}

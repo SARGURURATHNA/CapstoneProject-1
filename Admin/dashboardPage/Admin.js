@@ -280,3 +280,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+function handleLogout() {
+    sessionStorage.clear(); // This removes ALL session storage keys
+}
