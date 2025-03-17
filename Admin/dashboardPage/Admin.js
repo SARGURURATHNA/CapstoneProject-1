@@ -234,14 +234,49 @@ document.addEventListener("DOMContentLoaded", function () {
     const togglePasswordBtn = document.getElementById("togglePassword");
     const passwordSpan = document.getElementById("adminPassword");
 
-    togglePasswordBtn.addEventListener("click", function () {
-        if (passwordSpan.textContent === "*******") {
-            passwordSpan.textContent = "And_1234"; // Example password
-            togglePasswordBtn.textContent = "Hide";
-        } else {
-            passwordSpan.textContent = "*******";
-            togglePasswordBtn.textContent = "Show";
-        }
-    });
+    const loggedInAdmin = JSON.parse(sessionStorage.getItem("loggedInAdmin"));
+
+    const mobileNumber = loggedInAdmin?.mobileNumber;
+
+    if (mobileNumber) {
+        fetch(`http://localhost:8083/api/users/mobile/${mobileNumber}`)
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById("adminFirstName").textContent = user.firstName || "-";
+                document.getElementById("adminLastName").textContent = user.lastName || "-";
+                document.getElementById("adminPhone").textContent = user.mobileNumber || "-";
+                document.getElementById("adminAlternatePhone").textContent = user.alternateMobile || "-";
+                document.getElementById("adminEmail").textContent = user.email || "-";
+                document.getElementById("adminDOB").textContent = user.dob || "-";
+                document.getElementById("adminUsername").textContent = user.username || "-";
+                // document.getElementById("adminPassword").textContent = user.password || "-";
+
+                togglePasswordBtn.addEventListener("click", function () {
+                    if (passwordSpan.textContent === "*******") {
+                        passwordSpan.textContent = user.password || - "-"; // Example password
+                        togglePasswordBtn.textContent = "Hide";
+                    } else {
+                        passwordSpan.textContent = "*******";
+                        togglePasswordBtn.textContent = "Show";
+                    }
+                });
+            
+                // Set hidden password for toggle
+                passwordSpan.textContent = "*******";
+                togglePasswordBtn.dataset.password = user.password;
+
+                // Optional: combine multiple address fields if needed
+                if (user.addresses && user.addresses.length > 0) {
+                    const address = user.addresses[0]; // taking first address
+                    const fullAddress = `${address.doorNo ||""}, ${address.street || ""}, ${address.city || ""}, ${address.district ||""}, ${address.state || ""}, ${address.pincode || ""}`;
+                    document.getElementById("adminAddress").textContent = fullAddress;
+                } else {
+                    document.getElementById("adminAddress").textContent = "-";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching admin data:", error);
+            });
+    }
 });
 

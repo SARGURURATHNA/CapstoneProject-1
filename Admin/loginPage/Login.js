@@ -64,9 +64,5 @@ adminForm.addEventListener("submit", function (event) {
             console.error("Error fetching admin users:", error);
             alert("Login failed. Please try again.");
         });
-        // Redirect to Admin page (Modify this based on your authentication logic)
-        // alert("Admin login successful! Redirecting to Admin Dashboard...");
-        // localStorage.setItem("isAdminLoggedIn", "true"); // Store admin login state
-        // window.location.href = "../dashboardPage/Admin.html";
     }
 });
