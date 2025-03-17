@@ -43,9 +43,30 @@ adminForm.addEventListener("submit", function (event) {
         isValid = false;
     }
 
-    if(!isValid) return;
-    // Redirect to Admin page (Modify this based on your authentication logic)
-    alert("Admin login successful! Redirecting to Admin Dashboard...");
-    localStorage.setItem("isAdminLoggedIn", "true"); // Store admin login state
-    window.location.href = "../dashboardPage/Admin.html";
+    if(!isValid){ 
+        return;
+    }
+    else{
+        fetch("http://localhost:8083/api/users/admin-users")
+        .then(response => response.json())
+        .then(adminUsers => {
+            const matchedUser = adminUsers.find(user => user.username === username && user.password === password);
+            if (matchedUser) {
+                alert("Admin login successful! Redirecting to Admin Dashboard...");
+                sessionStorage.setItem("isAdminLoggedIn", "true");
+                sessionStorage.setItem("loggedInAdmin", JSON.stringify(matchedUser));
+                window.location.href = "../dashboardPage/Admin.html";
+            } else {
+                alert("Invalid admin credentials!");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching admin users:", error);
+            alert("Login failed. Please try again.");
+        });
+        // Redirect to Admin page (Modify this based on your authentication logic)
+        // alert("Admin login successful! Redirecting to Admin Dashboard...");
+        // localStorage.setItem("isAdminLoggedIn", "true"); // Store admin login state
+        // window.location.href = "../dashboardPage/Admin.html";
+    }
 });
