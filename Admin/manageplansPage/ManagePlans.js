@@ -1,163 +1,235 @@
-const plansData = {
-    "5G Packs": [
-        { cost: "2025", validity: "200 Days", data: "2.5 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "999", validity: "98 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "749", validity: "98 Days", data: "1 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "679", validity: "110 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "599", validity: "90 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "459", validity: "85 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "349", validity: "70 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "399", validity: "90 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" }
-    ],
-    "Monthly Packs": [
-        { cost: "445", validity: "28 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "549", validity: "24 Days", data: "2.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "449", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "409", validity: "20 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "389", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "349", validity: "24 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "359", validity: "28 Days", data: "2 GB/Day", sms: "150 SMS/day", calls: "Unlimited" },
-        { cost: "309", validity: "20 Days", data: "1 GB/Day", sms: "100 SMS/day", calls: "Unlimited" }
-    ],
-    "Annual Packs": [
-        { cost: "1299", validity: "250 Days", data: "2 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "1499", validity: "266 Days", data: "2 GB/Day", sms: "100 SMS/day", calls: "Unlimited" },
-        { cost: "1666", validity: "356 Days", data: "2.5 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "2500", validity: "365 Days", data: "3 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "3500", validity: "365 Days", data: "3.5 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "2000", validity: "356 Days", data: "24 GB", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "2200", validity: "346 Days", data: "2 GB/Day", sms: "200 SMS/day", calls: "Unlimited" },
-        { cost: "1999", validity: "356 Days", data: "1.5 GB/Day", sms: "100 SMS/day", calls: "Unlimited" }
-    ],
-    "Data Add-On": [
-        { cost: "198", validity: "Existing", data: "2 GB/Day", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "19", validity: "Existing", data: "1 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "39", validity: "Existing", data: "2 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "69", validity: "Existing", data: "3 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "79", validity: "Existing", data: "4 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "110", validity: "Existing", data: "6 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "129", validity: "Existing", data: "8 GB", sms: "Existing Pack", calls: "Existing Pack" },
-        { cost: "169", validity: "Existing", data: "12 GB", sms: "Existing Pack", calls: "Existing Pack" }
-    ],
-    "Talktime": [
-        { cost: "100", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹81.75 Talktime" },
-        { cost: "500", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹423.73 Talktime" },
-        { cost: "600", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹533.63 Talktime" },
-        { cost: "750", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹620.83 Talktime" },
-        { cost: "860", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹795.93 Talktime" },
-        { cost: "900", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹820.63 Talktime" },
-        { cost: "1000", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹950.73 Talktime" },
-        { cost: "1200", validity: "Unlimited", data: "No Data", sms: "No SMS", calls: "₹1100.73 Talktime" }
-    ]
-};
 document.addEventListener("DOMContentLoaded", function () {
     const planContainer = document.querySelector(".row.g-3");
     const tabs = document.querySelectorAll(".nav-tabs .nav-link");
-    let selectedCategory = "5G Packs"; // Default category
-    let editingPlanIndex = null; // Track the plan being edited
+    let plansData = {};
 
-    function getActiveCategory() {
-        return document.querySelector(".nav-tabs .nav-link.active").innerHTML.trim();
+    // Function to get URL parameter
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
     }
 
-    function displayPlans(category) {
+    async function fetchPlans(category) {
+        try {
+            const response = await fetch(`http://localhost:8083/api/plans/category?category=${encodeURIComponent(category)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const plans = await response.json();
+            return plans;
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+            return [];
+        }
+    }
+
+    function formatOttBenefits(plan) {
+        if (!plan.ottNames || plan.ottNames.length === 0) {
+            return null;
+        }
+        
+        const otts = plan.ottNames.join(',');
+        const categories = plan.ottCategories ? plan.ottCategories.join(',') : '';
+        return `${otts}|${categories}|${plan.validity}|${plan.data}|₹${plan.price}`;
+    }
+
+    // Function to display plans
+    async function displayPlans(category) {
+        if (!plansData[category]) {
+            plansData[category] = await fetchPlans(category);
+        }
         planContainer.innerHTML = ""; // Clear existing plans
 
-        if (plansData[category]) {
-            plansData[category].forEach((plan, index) => {
+        // Find the tab with the matching category and make it active
+        tabs.forEach(tab => {
+            if (tab.innerText.trim() === category) {
+                tabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+            }
+        });
+
+
+        // Check if plans exist for the category
+        if (plansData[category] && plansData[category].length > 0) {
+            plansData[category].forEach(plan => {
+                const benefits = formatOttBenefits(plan);
+                const benefitsHTML = benefits 
+                ? `<div class="benefit-badge position-absolute top-0 end-0 m-2 text-white d-flex align-items-center rounded-pill px-3 py-1" style="z-index:1;">
+                        <span class="me-2">${plan.badge}</span>
+                        <button class="btn btn-sm p-0 border-0 bg-transparent text-white" onclick="showBenefitsModal('${benefits}')">
+                            <i class="bi bi-arrow-right fs-5"></i>
+                        </button>
+                </div>`
+                : "";
+                let sms = plan.sms;
+                let calls = plan.calls;
+                let data = plan.data;
+                let validity = plan.validity;
+
+                // if (category === "Data Add-on") {
+                    if (!sms || sms.trim() === "") sms = "Existing pack";
+                    if (!calls || calls.trim() === "") calls = "Existing pack";
+                // }
+
+                if (category === "Talktime") {
+                    if (!data || data.trim() === "") data = "N/A";
+                    if (validity === null || validity === undefined || validity === 0) validity = "N/A";
+                    calls = "₹"+calls + " Talktime";
+                }
                 const planHTML = `
-                    <div class="col-md-3 col-sm-6">
-                        <div class="plan-card h-100 p-3 position-relative shadow-sm rounded">
-                            <div class="position-absolute top-0 end-0 p-2">
-                                <span class="material-icons text-primary me-2" style="cursor: pointer;" onclick="editPlan('${category}', ${index})">edit</span>
-                                <span class="material-icons text-danger" style="cursor: pointer;" onclick="removePlan('${category}', ${index})">delete</span>
+                <div class="col-md-3 col-sm-6 g-5">
+                    <div class="plan-card h-100 text-center position-relative">
+                    ${benefitsHTML}
+                        <h3 class="price fw-bold text-start">₹${plan.price}</h3>
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <div class="d-flex justify-content-between w-100">
+                                <p class="fw-bold">Validity</p>
+                                <p>${validity}</p>
                             </div>
-                            <h3 class="price text-start">₹${plan.cost}</h3>
-                            <div class="d-flex">
-                                <div><p><strong>${plan.validity}</strong></p><p>Validity</p></div>
-                                <div style="margin-left: 20px;"><p><strong>${plan.data}</strong></p><p>Data</p></div>
-                                <div style="margin-left: 20px;"><p><strong>${plan.sms}</strong></p><p>SMS</p></div>
-                                <div style="margin-left: 20px;"><p><strong>${plan.calls}</strong></p><p>Calls</p></div>
+                            <div class="d-flex justify-content-between w-100">
+                                <p class="fw-bold">Data</p>
+                                <p>${data}</p>
                             </div>
+                            <div class="d-flex justify-content-between w-100">
+                                <p class="fw-bold">SMS</p>
+                                <p>${sms}</p>
+                            </div>
+                            <div class="d-flex justify-content-between w-100">
+                                <p class="fw-bold">Calls</p>
+                                <p>${calls}</p>
+                            </div>
+                            
+                        </div>
+                        <div class="d-flex justify-content-center gap-3 mt-2">
+                            <span class="material-icons text-primary cursor-pointer" onclick='openEditModal(${JSON.stringify(plan)})' title="Edit">edit</span>
+                            <span class="material-icons text-danger cursor-pointer" onclick="deletePlan(${plan.planId})" title="Delete">delete</span>
                         </div>
                     </div>
+                </div>
                 `;
                 planContainer.innerHTML += planHTML;
             });
         } else {
-            planContainer.innerHTML = "<p>No plans available for this category.</p>";
+            planContainer.innerHTML = "<p>Sorry! Currently, no plans are available for this category.</p>";
         }
     }
 
-    displayPlans(selectedCategory);
+    // Function to initialize category tabs
+    async function initializeTabs() {
+        try {
+            // Fetch all unique categories
+            const response = await fetch("http://localhost:8083/api/plans/categories");
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const categoryList = await response.json();
+            const categories = new Set(categoryList);
+            
+            // Get category from URL or use first available
+            let selectedCategory = getQueryParam("category");
+            
+            if (!selectedCategory || !categories.has(selectedCategory)) {
+                selectedCategory = categories.has("5G Packs") ? "5G Packs" : categoryList[0];
+            }
+            await displayPlans(selectedCategory);
+        } catch (error) {
+            console.error("Error initializing tabs:", error);
+            planContainer.innerHTML = "<p class='col-12 text-center'>Error loading plans. Please try again later.</p>";
+        }
+    }
 
+    // Initialize the page
+    initializeTabs();
+
+    // Handle tab click event (switching categories within the page)
     tabs.forEach(tab => {
         tab.addEventListener("click", function (event) {
             event.preventDefault();
-            tabs.forEach(t => t.classList.remove("active"));
-            this.classList.add("active");
-            selectedCategory = getActiveCategory();
-            displayPlans(selectedCategory);
+            const category = this.innerText.trim();
+            displayPlans(category);
+            history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
         });
     });
 
+});
 
-    // Open Add Plan Modal
-    window.addNewPlan = function () {
-        editingPlanIndex = null; // Reset editing mode
-        document.getElementById("planModalLabel").innerText = "Add New Plan";
-        document.getElementById("planForm").reset(); // Clear form fields
-        new bootstrap.Modal(document.getElementById("planModal")).show();
-    };
+function openAddPlanModal() {
+    document.getElementById("editIndex").value = "";
+    document.getElementById("planForm").reset();
+    document.getElementById("planModalLabel").innerText = "Add New Plan";
+    const modal = new bootstrap.Modal(document.getElementById("planModal"));
+    modal.show();
+}
 
-    // Open Edit Plan Modal
-    window.editPlan = function (category, index) {
-        editingPlanIndex = index;
-        selectedCategory = category;
-        document.getElementById("planModalLabel").innerText = "Edit Plan";
+function openEditModal(plan) {
+    document.getElementById("planModalLabel").innerText = "Edit Plan";
+    document.getElementById("editIndex").value = plan.planId;
 
-        // Fill form fields with existing plan data
-        const plan = plansData[category][index];
-        document.getElementById("planCost").value = plan.cost;
-        document.getElementById("planValidity").value = plan.validity;
-        document.getElementById("planData").value = plan.data;
-        document.getElementById("planSms").value = plan.sms;
-        document.getElementById("planCalls").value = plan.calls;
+    document.getElementById("planCost").value = plan.price;
+    document.getElementById("planValidity").value = plan.validity;
+    document.getElementById("planData").value = plan.data;
+    document.getElementById("planSms").value = plan.sms;
+    document.getElementById("planCalls").value = plan.calls;
+    document.getElementById("planOtt").value = plan.ottNames?.join(", ");
+    document.getElementById("planOttCategory").value = plan.ottCategories?.join(", ");
 
-        new bootstrap.Modal(document.getElementById("planModal")).show();
-    };
-     
-    // Save or Update Plan
-    document.getElementById("planForm").addEventListener("submit", function (event) {
-        event.preventDefault();
+    const modal = new bootstrap.Modal(document.getElementById('planModal'));
+    modal.show();
+}
 
-        const cost = document.getElementById("planCost").value;
-        const validity = document.getElementById("planValidity").value;
-        const data = document.getElementById("planData").value;
-        const sms = document.getElementById("planSms").value;
-        const calls = document.getElementById("planCalls").value;
-        const category = getActiveCategory();
 
-        if (editingPlanIndex !== null) {
-            // Edit existing plan
-            plansData[category][editingPlanIndex] = { cost, validity, data, sms, calls };
-            editingPlanIndex = null; // Reset edit mode
-        } else {
-            // Add new plan
-            plansData[category] = plansData[category] || [];
-            plansData[category].push({ cost, validity, data, sms, calls });
-        }
 
-        displayPlans(category); // Refresh UI
-        bootstrap.Modal.getInstance(document.getElementById("planModal")).hide(); // Close modal
+function showBenefitsModal(benefit) {
+    const [subsString, categoriesString, validity, totalData, cost] = benefit.split("|");
+    const subscriptionImages = document.getElementById("subscriptionImages");
+    const packDetailsTable = document.getElementById("packDetailsTable").querySelector("tbody");
+  
+    // Clear previous content
+    subscriptionImages.innerHTML = "";
+    packDetailsTable.innerHTML = "";
+  
+    const subscriptions = subsString.split(",");
+    const categories = categoriesString.split(",");
+  
+    // Render subscription logos
+    subscriptions.forEach((sub, i) => {
+        const div = document.createElement("div");
+        div.classList.add("text-center", "me-3");
+
+        const img = document.createElement("img");
+        img.src = `Assets/${sub.trim().toLowerCase()}.png`;
+        img.alt = sub.trim();
+        img.style.height = "40px";
+        img.classList.add("d-block", "mx-auto");
+
+        const label = document.createElement("div");
+        label.innerText = categories[i]?.charAt(0).toUpperCase() + categories[i]?.slice(1);
+        label.classList.add("small", "text-muted");
+
+        div.appendChild(img);
+        div.appendChild(label);
+        subscriptionImages.appendChild(div);
     });
-
-    // Remove Plan
-    window.removePlan = function (category, index) {
-        if (confirm("Are you sure you want to delete this plan?")) {
-            plansData[category].splice(index, 1);
-            displayPlans(category);
-        }
-    };
-    
+  
+    // Define pack detail entries
+    const details = [
+      { label: "Cost", value: cost },
+      { label: "Validity", value: validity },
+      { label: "Data", value: totalData },
+    ];
+  
+    // Add rows to table
+    details.forEach(detail => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="fw-bold">${detail.label}</td>
+        <td>${detail.value}</td>
+      `;
+      packDetailsTable.appendChild(row);
     });
+  
+    // Show modal
+    const benefitModal = new bootstrap.Modal(document.getElementById('benefitModal'));
+    benefitModal.show();
+}  
