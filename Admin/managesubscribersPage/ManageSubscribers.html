@@ -53,29 +53,29 @@
   </div>
 
   <!-- Edit Modal -->
+<!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Subscriber</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="editIndex">
-                <label>Email:</label>
-                <input type="text" id="editEmail" class="form-control mb-2">
-                <label>Status:</label>
-                <select id="editStatus" class="form-select">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="blocked">Blocked</option>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
-            </div>
-        </div>
-    </div>
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Edit Subscriber Status</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+              <input type="hidden" id="editIndex">
+              <input type="hidden" id="editUserId">
+              <label>Status:</label>
+              <select id="editStatus" class="form-select">
+                  <option value="Active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="blocked">Blocked</option>
+              </select>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
+          </div>
+      </div>
+  </div>
 </div>
 
 

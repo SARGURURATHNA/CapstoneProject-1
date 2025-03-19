@@ -30,60 +30,126 @@
             </div>
         </section>
         
-        <!-- Subscriber Details Section -->
-        <section class="Subscriber-details text-center mt-5 w-100">
+        <!-- Main Content Section -->
+        <section class="main-content w-100">
             <div class="container mt-5">
-                <h4>Subscribers who's plan is expiring in 3 days.<button id="downloadAll" class="btn bg-transparent border-0 me-2">
-                    <span class="material-icons text-primary">download</span>
-                </button></h4>
-
-                <div id="SubsContainer" class="d-flex flex-column align-items-center mt-4">
-                    <!-- Subscriber details will be added dynamically here -->
-                </div> 
+                <!-- Metrics Cards Row -->
+                <div class="row mb-5">
+                    <!-- Total Subscribers Card -->
+                    <div class="col-md-4">
+                        <div class="card metrics-card h-100 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-container bg-primary-light rounded-circle me-3">
+                                    <span class="material-icons text-primary">people</span>
+                                </div>
+                                <div>
+                                    <h6 class="card-subtitle mb-1 text-muted">Total Subscribers</h6>
+                                    <h3 class="card-title mb-0" id="totalSubscribers">4,215</h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <!-- <span class="badge bg-success">+2.3%</span>
+                                <small class="text-muted">from last month</small> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Subscribers Card -->
+                    <div class="col-md-4">
+                        <div class="card metrics-card h-100 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-container bg-success-light rounded-circle me-3">
+                                    <span class="material-icons text-success">verified_user</span>
+                                </div>
+                                <div>
+                                    <h6 class="card-subtitle mb-1 text-muted">Active Subscribers</h6>
+                                    <h3 class="card-title mb-0" id="activeSubscribers">3,890</h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <!-- <span class="badge bg-success">+1.7%</span>
+                                <small class="text-muted">from last month</small> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly Revenue Card -->
+                    <div class="col-md-4">
+                        <div class="card metrics-card h-100 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-container bg-warning-light rounded-circle me-3">
+                                    <span class="material-icons text-warning">payments</span>
+                                </div>
+                                <div>
+                                    <h6 class="card-subtitle mb-1 text-muted">Monthly Revenue</h6>
+                                    <h3 class="card-title mb-0" id="monthlyRevenue">₹1,48,500</h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <!-- <span class="badge bg-success">+5.2%</span>
+                                <small class="text-muted">from last month</small> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subscribers Expiring Section -->
+                <div class="subscribers-expiring mt-4 mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Subscribers who's plan is expiring in 3 days</h4>
+                        <button id="downloadAll" class="btn btn-outline-primary d-flex align-items-center">
+                            <span class="material-icons me-2">download</span>
+                            Download All
+                        </button>
+                    </div>
+                    
+                    <div id="SubsContainer" class="row">
+                        <!-- Subscriber details will be added dynamically here -->
+                    </div>
+                </div>
             </div>
         </section>
     </div>
 
     <!-- View Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profileModalLabel">Admin Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Personal Information -->
-                <h6>Personal Information</h6>
-                <ul class="list-group mb-3">
-                    <li class="list-group-item"><strong>First Name:</strong> <span id="adminFirstName">John</span></li>
-                    <li class="list-group-item"><strong>Last Name:</strong> <span id="adminLastName">Doe</span></li>
-                    <li class="list-group-item"><strong>Phone Number:</strong> <span id="adminPhone">+91 9856471230</span></li>
-                    <li class="list-group-item"><strong>Alternate Phone Number:</strong> <span id="adminAlternatePhone">+91 9856470321</span></li>
-                    <li class="list-group-item"><strong>Email:</strong> <span id="adminEmail">JohnDoe@gmail.com</span></li>
-                    <li class="list-group-item"><strong>Address:</strong> <span id="adminAddress">123 Main St, Mumbai City</span></li>
-                    <li class="list-group-item"><strong>Date of Birth:</strong> <span id="adminDOB">01 Jan 1990</span></li>
-                </ul>
-                <hr>
-                <!-- Login Information -->
-                <h6>Login Information</h6>
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Username:</strong> <span id="adminUsername">Andrew</span></li>
-                    <li class="list-group-item"><strong>Password:</strong> <span id="adminPassword">*******</span> 
-                        <button class="btn btn-sm btn-secondary ms-2" id="togglePassword">Show</button>
-                    </li>
-                </ul>
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Admin Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Personal Information -->
+                    <h6>Personal Information</h6>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item"><strong>First Name:</strong> <span id="adminFirstName">John</span></li>
+                        <li class="list-group-item"><strong>Last Name:</strong> <span id="adminLastName">Doe</span></li>
+                        <li class="list-group-item"><strong>Phone Number:</strong> <span id="adminPhone">+91 9856471230</span></li>
+                        <li class="list-group-item"><strong>Alternate Phone Number:</strong> <span id="adminAlternatePhone">+91 9856470321</span></li>
+                        <li class="list-group-item"><strong>Email:</strong> <span id="adminEmail">JohnDoe@gmail.com</span></li>
+                        <li class="list-group-item"><strong>Address:</strong> <span id="adminAddress">123 Main St, Mumbai City</span></li>
+                        <li class="list-group-item"><strong>Date of Birth:</strong> <span id="adminDOB">01 Jan 1990</span></li>
+                    </ul>
+                    <hr>
+                    <!-- Login Information -->
+                    <h6>Login Information</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Username:</strong> <span id="adminUsername">Andrew</span></li>
+                        <li class="list-group-item"><strong>Password:</strong> <span id="adminPassword">*******</span> 
+                            <button class="btn btn-sm btn-secondary ms-2" id="togglePassword">Show</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <script src="Admin.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="../commonJS/SideBar.js"></script>
 </body>
-
-<script src="Admin.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="../commonJS/SideBar.js"></script>
 </html>
