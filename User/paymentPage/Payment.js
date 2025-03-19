@@ -62,23 +62,23 @@ function processPayment() {
     let now = new Date();
     let date = now.toLocaleDateString();
     let time = now.toLocaleTimeString();
-    let transactionId = "TXN" + Math.floor(100000 + Math.random() * 900000);
+    let transactionRef = "TXN" + Math.floor(100000 + Math.random() * 900000);
 
     // Populate modal with transaction details
-    document.getElementById("modalTransactionId").textContent = transactionId;
+    document.getElementById("modalTransactionId").textContent = transactionRef;
     document.getElementById("modalPaymentMethod").textContent = paymentMethod.toUpperCase();
     document.getElementById("modalAmount").textContent = amount;
     document.getElementById("modalDate").textContent = date;
     document.getElementById("modalTime").textContent = time;
 
-    saveTransaction(amount, date, transactionId, paymentMethod);
+    saveTransaction(amount, date, transactionRef, paymentMethod);
 
     // Show the modal
     let modal = new bootstrap.Modal(document.getElementById('paymentSuccessModal'));
     modal.show();
 }
 
-function saveTransaction(amount, date, transactionId, paymentMode) {
+function saveTransaction(amount, date, transactionRef, paymentMode) {
 
 //changes
 let planDetails = JSON.parse(localStorage.getItem("currentPlan"));
@@ -90,7 +90,7 @@ if (!user || !user.userId) {
     return;
 }
 
-const query = `?userId=${user.userId}&planId=${planDetails.planId}&amount=${amount}&paymentMode=${paymentMode}`;
+const query = `?userId=${user.userId}&planId=${planDetails.planId}&amount=${amount}&paymentMode=${paymentMode}&transactionRef=${transactionRef}`;
 
 fetch(`http://localhost:8083/api/recharge/buy${query}`, {
     method: "POST"

@@ -40,6 +40,7 @@ function loadSubscribers(filtered = subscribers) {
                 <div class="subscriber-info">
                     <h5 class="subscriber-name mb-0">${firstName} ${lastName}</h5>
                     <p class="subscriber-phone mb-0">${mobileNumber}</p>
+                    <p class="subscriber-email mb-0">${email}</p>
                     <span class="badge bg-${statusBadge(userStatus)}">${userStatus}</span>
                 </div>
                 <div class="action-buttons">

@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
         XLSX.utils.book_append_sheet(wb, accountWS, "Account Details");
         
         // Current Plan Sheet
-        const currentPlanData = [
+        const currentPlanSheetData = [
             ["Current Plan Details", ""],
             ["Cost", `₹${currentPlanData.cost || ""}`],
             ["Validity", `${currentPlanData.validity || ""} days`],
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ["Expiry Date", currentPlanData.expiryDate || "N/A"]
         ];
         
-        const planWS = XLSX.utils.aoa_to_sheet(currentPlanData);
+        const planWS = XLSX.utils.aoa_to_sheet(currentPlanSheetData);
         XLSX.utils.book_append_sheet(wb, planWS, "Current Plan");
         
         // Recharge History Sheet

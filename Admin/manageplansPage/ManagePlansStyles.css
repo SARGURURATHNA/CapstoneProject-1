@@ -10,10 +10,15 @@ body {
     display: flex;
     min-height: 100vh; /* Full viewport height */
 }
+.navbar-brand {
+    margin-bottom: 30px !important;
+    margin-left: 10px !important;
+    font-size: 24px;
+}
 .sidebar {
-    width: auto;
+    width: 250px;
     background-color: #fff;
-    padding: 20px;
+    padding:25px 20px;
     border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
@@ -21,7 +26,7 @@ body {
 }
 .nav-link {
     color: black;
-    padding: 10px;
+    padding:12px 15px;
     border-radius: 5px;
 }
 .nav-link:hover {
@@ -44,68 +49,68 @@ body {
     display: none;
 }
 
-    .plan-badge {
-        background-color: #d1e7ff;
-        color: #0071eb;
-        font-size: 12px;
-        font-weight: bold;
-        border-radius: 5px;
-        padding: 5px 10px;
-    }
+.plan-badge {
+    background-color: #d1e7ff;
+    color: #0071eb;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
 
-    .price {
-        font-size: 24px;
-        font-weight: bold;
-    }
+.price {
+    font-size: 24px;
+    font-weight: bold;
+}
 
-    .btn-buy {
-        width: 100%;
-        background-color: #0047ff;
-        color: white;
-        font-weight: bold;
-        border-radius: 10px;
-    }
-    .btn-buy:hover{
-        background-color: rgb(11, 11, 196);
-        color: white;
-    }
-    .All_Plans {
-        flex: 1;
-    }
-    .nav-tabs .nav-link {
-        color: black !important;
-    }
-    .nav-tabs .nav-link.active {
-        color: #007bff !important;
-        font-weight: bold;
-    }
+.btn-buy {
+    width: 100%;
+    background-color: #0047ff;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+}
+.btn-buy:hover{
+    background-color: rgb(11, 11, 196);
+    color: white;
+}
+.All_Plans {
+    flex: 1;
+}
+.nav-tabs .nav-link {
+    color: black !important;
+}
+.nav-tabs .nav-link.active {
+    color: #007bff !important;
+    font-weight: bold;
+}
 
-    .slanted {
-        font-size: larger;
-        display: inline-block;
-        transform: skewX(-20deg);
-        color: #007bff;
-    }
-    .normal {
-        font-size: larger;
-        color: black;
-    }
+.slanted {
+    font-size: larger;
+    display: inline-block;
+    transform: skewX(-20deg);
+    color: #007bff;
+}
+.normal {
+    font-size: larger;
+    color: black;
+}
 
-    .benefit-badge{
-        position: absolute;
-        top: 10px; 
-        right: 5px; 
-        background: blue; 
-        color: white; 
-        font-size: 0.80rem; 
-        padding: 6px 12px; 
-        border-radius: 25px;
-        font-weight: bold;
-    }
-    .cursor-pointer {
-        cursor: pointer;
-      }
-      .material-icons {
-        font-size: 24px;
-      }
+.benefit-badge{
+    position: absolute;
+    top: 10px; 
+    right: 5px; 
+    background: blue; 
+    color: white; 
+    font-size: 0.80rem; 
+    padding: 6px 12px; 
+    border-radius: 25px;
+    font-weight: bold;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.material-icons {
+    font-size: 24px;
+}
       

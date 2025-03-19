@@ -73,9 +73,9 @@
                 </div>
                 <div class="text-end"> <!-- Aligns text to the right -->
                     <h6>Mobile Number</h6>
-                    <p>7894561230</p>
+                    <p id="mobileNumber"></p>
                     <h6>Name</h6>
-                    <p id="userName">John</p>
+                    <p id="userName"></p>
                 </div>
             </div>
         </div>
@@ -118,6 +118,15 @@
                 </div>
                 <div class="modal-body">
                     <form id="editForm">
+                        <div class="mb-3 text-center">
+                            <label for="profileImageUpload" class="form-label">Profile Image</label>
+                            <div class="profile-pic-container mx-auto" style="cursor: pointer;" id="profileImageContainer">
+                                <img id="editProfilePic" src="" alt="Profile Picture" class="profile-pic">
+                                <div id="editInitialCircle" class="initial-circle">J</div>
+                            </div>
+                            <input type="file" class="form-control d-none" id="profileImageUpload" accept="image/*">
+                            <small class="text-muted">Click on the image to change</small>
+                        </div>
                         <div class="mb-3">
                             <label for="editfirstName" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="editfirstName" readonly>
@@ -132,7 +141,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="editalternateMobile" class="form-label">Alternate Mobile Number</label>
-                            <input type="text" class="form-control" id="editalternateMobile" readonly>
+                            <input type="text" class="form-control" id="editalternateMobile">
                         </div>
                         <div class="mb-3">
                             <label for="editAddress" class="form-label">Address</label>
