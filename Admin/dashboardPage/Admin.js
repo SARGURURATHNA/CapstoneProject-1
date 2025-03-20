@@ -1,95 +1,10 @@
-// Sample subscriber data
-const subscribers = [
-    {
-        name: "John Doe",
-        phone: "+91 9876543210",
-        email: "johndoe@example.com",
-        address: "123, ABC Street, Mumbai",
-        dob: "01 Jan 1990",
-        cost: "₹25",
-        date: "Apr 21, 2025",
-        transactionId: "TXN12345",
-        paymentMode: "Credit Card",
-        validity: "28 Days",
-        data: "2GB/Day",
-        sms: "100 SMS/Day",
-        calls: "Unlimited"
-    },
-    {
-        name: "Jane Smith",
-        phone: "+91 8765432109",
-        email: "janesmith@example.com",
-        address: "456, XYZ Road, Delhi",
-        dob: "10 Feb 1995",
-        cost: "₹15",
-        date: "Apr 21, 2025",
-        transactionId: "TXN67890",
-        paymentMode: "Debit Card",
-        validity: "14 Days",
-        data: "1GB/Day",
-        sms: "50 SMS/Day",
-        calls: "Unlimited"
-    },
-    {
-        name: "Helen Mac",
-        phone: "+91 5462317890",
-        email: "helen@example.com",
-        address: "48, XB Road, Ladak",
-        dob: "16 Mar 1995",
-        cost: "₹30",
-        date: "Mar 23, 2025",
-        transactionId: "TXN62390",
-        paymentMode: "Net Banking",
-        validity: "14 Days",
-        data: "1GB/Day",
-        sms: "50 SMS/Day",
-        calls: "Unlimited"
-    },
-    {
-        name: "George Bill",
-        phone: "+91 9788432109",
-        email: "george@example.com",
-        address: "56, Rock Road, Mumbai",
-        dob: "10 Apr 2000",
-        cost: "₹56",
-        date: "Mar 23, 2025",
-        transactionId: "TXN67849",
-        paymentMode: "Upi",
-        validity: "26 Days",
-        data: "1GB/Day",
-        sms: "50 SMS/Day",
-        calls: "Unlimited"
-    }
-];
-
-// Dashboard metrics data
-const dashboardMetrics = {
-    totalSubscribers: 4215,
-    activeSubscribers: 3890,
-    monthlyRevenue: "₹1,48,500"
-};
-
 document.addEventListener("DOMContentLoaded", function() {
-    // Set dashboard metrics
-    document.getElementById("totalSubscribers").textContent = dashboardMetrics.totalSubscribers.toLocaleString();
-    document.getElementById("activeSubscribers").textContent = dashboardMetrics.activeSubscribers.toLocaleString();
-    document.getElementById("monthlyRevenue").textContent = dashboardMetrics.monthlyRevenue;
-    
-    const filterDropdown = document.getElementById("filterDropdown");
-    if (filterDropdown) {
-        filterDropdown.addEventListener("change", function() {
-            const selected = this.value;
-            filterSubscribers(selected);
-        });
-    }
-    
-    // Display subscribers
-    displaySubscribers();
-    
+    loadSubscribersWithPlans(); // Fetch and display from backend
+
     // Setup event handlers
-    if (typeof setupEventHandlers === 'function') {
-        setupEventHandlers();
-    }
+    // if (typeof setupEventHandlers === 'function') {
+    //     setupEventHandlers();
+    // }
     
     // Setup profile modal
     if (typeof setupProfileModal === 'function') {
@@ -100,67 +15,85 @@ document.addEventListener("DOMContentLoaded", function() {
     if (typeof setupEditModals === 'function') {
         setupEditModals();
     }
+
+    loadDashboardMetrics();
 });
 
-function filterSubscribers(duration) {
-    const today = new Date();
-
-    const filtered = subscribers.filter(sub => {
-        const dateParts = sub.date.split(' ');
-        const month = getMonthNumber(dateParts[0]);
-        const day = parseInt(dateParts[1].replace(',', ''));
-        const year = parseInt(dateParts[2]);
-        
-        const expiryDate = new Date(year, month, day);
-        
-        const diffTime = expiryDate - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        switch (duration) {
-            case "3days":
-                return diffDays <= 3 && diffDays >= 0;
-            case "2weeks":
-                return diffDays <= 14 && diffDays >= 0;
-            case "1month":
-                return diffDays <= 30 && diffDays >= 0;
-            default:
-                return true; // "All"
-        }
-    });
-
-    displaySubscribers(filtered);
+function loadDashboardMetrics() {
+    fetch("http://localhost:8083/api/users/metrics")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("totalSubscribers").textContent = data.totalSubscribers;
+            document.getElementById("activeSubscribers").textContent = data.activeSubscribers;
+            document.getElementById("monthlyRevenue").textContent = data.monthlyRevenue;
+        })
+        .catch(error => {
+            console.error("Failed to load metrics:", error);
+        });
 }
 
-function getMonthNumber(monthName) {
-    const months = {
-        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-    };
-    return months[monthName];
+let subscribers = [];
+
+async function loadSubscribersWithPlans() {
+    try {
+        const res = await fetch('http://localhost:8083/api/users/subscribers');
+        const users = await res.json(); // assuming it returns a list of users with userId        
+        const mergedSubscribers = [];
+
+        for (const user of users) {
+            const planRes = await fetch(`http://localhost:8083/api/recharge/current-plan/details?userId=${user.userId}`);
+            const planData = await planRes.json();
+
+            // Merge user and plan info
+            const merged = {
+                name: planData.name,
+                phone: planData.mobile,
+                userId: planData.userId,
+
+                // Plan details
+                cost: `₹${planData.cost}`,
+                date: planData.expiryDate,
+                transactionId: planData.transactionId || "TXN00000", // dummy or from API if available
+                paymentMode: planData.paymentMode || "N/A",
+                validity: `${planData.validity} Days`,
+                data: planData.data,
+                sms: planData.sms,
+                calls: planData.calls
+            };
+
+            mergedSubscribers.push(merged);
+        }
+
+        subscribers = mergedSubscribers;
+        displaySubscribers(subscribers); // Call your existing function
+
+    } catch (err) {
+        console.error("Failed to load subscribers:", err);
+    }
 }
 
 const subsContainer = document.getElementById("SubsContainer");
 
 // Function to display subscriber details dynamically
-function displaySubscribers(filteredList = subscribers) {
+function displaySubscribers(subscribers) {
     subsContainer.innerHTML = "";
-    if (filteredList.length === 0) {
+    if (subscribers.length === 0) {
         // Display a message when no subscribers match the filter
         subsContainer.innerHTML = `
             <div class="col-12">
                 <div class="alert alert-info">
-                    No subscribers match the selected filter criteria.
+                    No subscribers found.
                 </div>
             </div>
         `;
         return;
     }
-    filteredList.forEach((subscriber, index) => {
+    subscribers.forEach((subscriber, index) => {
         const colDiv = document.createElement("div");
         colDiv.className = "col-lg-6 col-xl-6 mb-4";
         
         colDiv.innerHTML = `
-            <div class="card subscriber-card" data-subscriber-index="${index}">
+            <div class="card subscriber-card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -175,50 +108,10 @@ function displaySubscribers(filteredList = subscribers) {
                         <p class="mb-1"><strong>Expiring:</strong> <span class="text-danger">${subscriber.date}</span></p>
                         <p class="mb-1"><strong>Plan:</strong> ${subscriber.cost} / ${subscriber.validity}</p>
                     </div>
-                    
-                    <!-- Personal Details Section -->
-                    <div class="details-section" style="display: none;">
-                        <h6 class="mb-3">Personal Details</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Email:</strong><br>${subscriber.email}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>DOB:</strong><br>${subscriber.dob}</p>
-                            </div>
-                        </div>
-                        <p><strong>Address:</strong><br>${subscriber.address}</p>
-                    </div>
-                    
-                    <!-- Recharge History Section -->
-                    <div class="recharge-section" style="display: none;">
-                        <h6 class="mb-3">Transaction Details</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <p><strong>Transaction ID:</strong><br>${subscriber.transactionId}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Payment Mode:</strong><br>${subscriber.paymentMode}</p>
-                            </div>
-                        </div>
-                        
-                        <h6 class="mb-3">Plan Details</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Cost:</strong> ${subscriber.cost}</p>
-                                <p><strong>Validity:</strong> ${subscriber.validity}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Data:</strong> ${subscriber.data}</p>
-                                <p><strong>SMS:</strong> ${subscriber.sms}</p>
-                                <p><strong>Calls:</strong> ${subscriber.calls}</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="card-footer">
-                    <button class="btn btn-primary action-btn btn-details" data-index="${index}">View Details</button>
+                    <button class="btn btn-primary action-btn btn-details" data-user-id="${subscriber.userId}">View Details</button>
                 </div>
             </div>
         `;
@@ -226,19 +119,60 @@ function displaySubscribers(filteredList = subscribers) {
         subsContainer.appendChild(colDiv);
     });
     document.querySelectorAll('.btn-details').forEach(button => {
-        button.addEventListener('click', function() {
-            const index = this.getAttribute('data-index');
-            toggleDetails(index);
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+            window.location.href = `../SubscribersReport/SubscriberReport.html?userId=${userId}`;
         });
     });
 }
 
-function setupEventHandlers() {
-    // Setup download all button
-    document.getElementById("downloadAll").addEventListener("click", () => {
-        downloadAllExcel();
+document.getElementById("filterDropdown").addEventListener("change", function () {
+    const filterValue = this.value;
+    filterSubscribersByExpiry(filterValue);
+});
+
+function filterSubscribersByExpiry(filter) {
+    if (filter === "all") {
+        displaySubscribers(subscribers);
+        return;
+    }
+
+    const now = new Date();
+    let thresholdDate;
+
+    switch (filter) {
+        case "3days":
+            thresholdDate = new Date(now);
+            thresholdDate.setDate(thresholdDate.getDate() + 3);
+            break;
+        case "2weeks":
+            thresholdDate = new Date(now);
+            thresholdDate.setDate(thresholdDate.getDate() + 14);
+            break;
+        case "1month":
+            thresholdDate = new Date(now);
+            thresholdDate.setMonth(thresholdDate.getMonth() + 1);
+            break;
+        default:
+            displaySubscribers(subscribers);
+            return;
+    }
+
+    const filtered = subscribers.filter(sub => {
+        const expiry = new Date(sub.date);
+        return expiry <= thresholdDate && expiry >= now;
     });
+
+    displaySubscribers(filtered);
 }
+
+
+// function setupEventHandlers() {
+//     // Setup download all button
+//     document.getElementById("downloadAll").addEventListener("click", () => {
+//         downloadAllExcel();
+//     });
+// }
 
 // Function to download all subscribers data
 function downloadAllExcel() {
@@ -271,7 +205,7 @@ function downloadAllExcel() {
 }
 
 
-// Profile Modals
+// Profile Modals to admin.
 function setupProfileModal() {
     const togglePasswordBtn = document.getElementById("togglePassword");
     const passwordSpan = document.getElementById("adminPassword");
@@ -489,6 +423,5 @@ document.getElementById('saveLoginInfoBtn').addEventListener('click', function()
 // Function to handle logout
 function handleLogout() {
     sessionStorage.clear();
-    // Redirect to login page
     window.location.href = "../loginPage/Login.html";
 }

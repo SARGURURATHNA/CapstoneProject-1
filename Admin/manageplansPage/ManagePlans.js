@@ -215,8 +215,13 @@ document.getElementById("planForm").addEventListener("submit", async function (e
     const data = document.getElementById("planData").value;
     const sms = document.getElementById("planSms").value;
     const calls = document.getElementById("planCalls").value;
-    const ottNames = document.getElementById("planOtt").value.split(",").map(item => item.trim());
-    const ottCategories = document.getElementById("planOttCategory").value.split(",").map(item => item.trim());
+     // Handle OTT fields - check if they're empty first
+     const ottInput = document.getElementById("planOtt").value.trim();
+     const ottCategoryInput = document.getElementById("planOttCategory").value.trim();
+     
+     // Only split and map if the fields aren't empty
+     const ottNames = ottInput ? ottInput.split(",").map(item => item.trim()).filter(item => item) : null;
+     const ottCategories = ottCategoryInput ? ottCategoryInput.split(",").map(item => item.trim()).filter(item => item) : null;
 
     // Get selected category from active tab
     const activeTab = document.querySelector("#categoryTabs .nav-link.active");
@@ -283,8 +288,8 @@ function openEditModal(plan) {
     document.getElementById("planData").value = plan.data;
     document.getElementById("planSms").value = plan.sms;
     document.getElementById("planCalls").value = plan.calls;
-    document.getElementById("planOtt").value = plan.ottNames?.join(", ");
-    document.getElementById("planOttCategory").value = plan.ottCategories?.join(", ");
+    document.getElementById("planOtt").value = plan.ottNames?.join(", ") || "";
+    document.getElementById("planOttCategory").value = plan.ottCategories?.join(", ") || "";
 
     const modal = new bootstrap.Modal(document.getElementById('planModal'));
     modal.show();
