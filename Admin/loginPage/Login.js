@@ -55,6 +55,7 @@ adminForm.addEventListener("submit", function (event) {
                 alert("Admin login successful! Redirecting to Admin Dashboard...");
                 sessionStorage.setItem("isAdminLoggedIn", "true");
                 sessionStorage.setItem("loggedInAdmin", JSON.stringify(matchedUser));
+                sessionStorage.setItem("adminUserId", matchedUser.userId);
                 window.location.href = "../dashboardPage/Admin.html";
             } else {
                 alert("Invalid admin credentials!");

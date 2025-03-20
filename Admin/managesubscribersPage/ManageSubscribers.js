@@ -45,7 +45,7 @@ function loadSubscribers(filtered = subscribers) {
                 </div>
                 <div class="action-buttons">
                     <button class="material-icons btn icon-btn edit-btn" data-index="${index}" data-bs-toggle="modal" data-bs-target="#editModal">edit</button>
-                    <a href="SubscriberReport.html?userId=${subscriber.userId}" class="btn btn-outline-primary btn-sm view-details-btn">View Details</a>
+                    <a href="../SubscribersReport/SubscriberReport.html?userId=${subscriber.userId}" class="btn btn-outline-primary btn-sm view-details-btn">View Details</a>
                 </div>
             </div>
             <div class="details mt-3">
@@ -208,6 +208,7 @@ async function handleUpdate() {
 
 function handleLogout() {
     sessionStorage.clear(); // This removes ALL session storage keys
+    window.location.href = "../loginPage/Login.html";
 }
 
 document.addEventListener("DOMContentLoaded", () => {

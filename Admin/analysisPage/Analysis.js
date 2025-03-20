@@ -141,4 +141,5 @@ function downloadChartData(chartId) {
 
 function handleLogout() {
     sessionStorage.clear(); // This removes ALL session storage keys
+    window.location.href = "../loginPage/Login.html";
 }

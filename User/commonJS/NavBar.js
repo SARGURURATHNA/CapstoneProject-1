@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
 
             document.getElementById("logoutBtn").addEventListener("click", function () {
-                sessionStorage.removeItem("isLoggedIn"); // Remove login state
+                sessionStorage.clear(); // Remove login state
                 updateDropdown(); // Refresh dropdown
                 window.location.href = "../indexPage/Home.html";
             });

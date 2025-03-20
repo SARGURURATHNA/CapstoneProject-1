@@ -212,3 +212,9 @@ document.addEventListener("DOMContentLoaded", function () {
         XLSX.writeFile(wb, fileName);
     });
 });
+
+function handleLogout() {
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = "../loginPage/Login.html";
+}
