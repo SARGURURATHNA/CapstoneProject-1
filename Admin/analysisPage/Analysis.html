@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="AnalysisStyles.css">
@@ -29,51 +28,86 @@
         </section>
 
         <section class="main-content w-100 ms-5">
-            <div class="container d-flex flex-column mt-4">
-                <h2 class="mb-4">Analysis</h2>
-                <div class="row">
-                    <!-- Bar Chart: Recharges -->
-                    <div class="col-md-6">
-                        <h4>Recharges (in Thousands)
-                            <button class="download-btn btn bg-transparent border-0 me-2" data-chart="barChart">
-                                <span class="material-icons text-primary">download</span>
-                            </button>
-                        </h4>
-                        <canvas id="barChart"></canvas>
+            <div class="container-fluid mt-4 mb-5">
+                <h2 class="mb-4">Analytics Dashboard</h2>
+                
+                <div class="row g-4">
+                    <!-- Left Column -->
+                    <div class="col-lg-6">
+                        <!-- Bar Chart: Recharges -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title m-0">Recharges (in Thousands)</h4>
+                                    <button class="download-btn btn bg-transparent border-0" data-chart="barChart">
+                                        <span class="material-icons text-primary">download</span>
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:300px;">
+                                    <canvas id="barChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Line Chart: Revenue -->
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title m-0">Revenue (in Millions)</h4>
+                                    <button class="download-btn btn bg-transparent border-0" data-chart="lineChart">
+                                        <span class="material-icons text-primary">download</span>
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:300px;">
+                                    <canvas id="lineChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-4">
-                    <!-- Pie Chart: Plan Popularity -->
-                    <div class="col-md-6">
-                        <h4>Plan Popularity
-                            <button class="download-btn btn bg-transparent border-0 me-2" data-chart="pieChart">
-                                <span class="material-icons text-primary">download</span>
-                            </button>
-                        </h4>
-                        <canvas id="pieChart"></canvas>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <!-- Line Chart: Revenue -->
-                    <div class="col-md-6">
-                        <h4>Revenue (in Millions)
-                            <button class="download-btn btn bg-transparent border-0 me-2" data-chart="lineChart">
-                                <span class="material-icons text-primary">download</span>
-                            </button>
-                        </h4>
-                        <canvas id="lineChart"></canvas>
+                    
+                    <!-- Right Column -->
+                    <div class="col-lg-6">
+                        <!-- Plan Popularity -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title m-0">Plan Popularity</h4>
+                                    <button class="download-btn btn bg-transparent border-0" data-chart="planbarChart">
+                                        <span class="material-icons text-primary">download</span>
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:300px;">
+                                    <canvas id="planbarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Modes -->
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title m-0">Payment Modes</h4>
+                                    <button class="download-btn btn bg-transparent border-0" data-chart="doughnutChart">
+                                        <span class="material-icons text-primary">download</span>
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:300px;">
+                                    <canvas id="doughnutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
-<script src="Analysis.js"></script>
-<script src="../commonJS/SideBar.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script src="Analysis.js"></script>
+    <script src="../commonJS/SideBar.js"></script>
 </body>
 </html>

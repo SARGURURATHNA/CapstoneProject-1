@@ -1,51 +1,94 @@
-body,html{
+body, html {
     margin: 0;
     height: 100%;
+}
 
-}
 body {
-    background-color: whitesmoke;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .wrapper {
     display: flex;
-    min-height: 100vh; /* Full viewport height */
+    min-height: 100vh;
 }
+
+.btn-danger {
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    width: 100%;
+}
+
 .sidebar {
     width: 250px;
     background-color: #fff;
-    padding:25px 20px;
+    padding: 25px 20px;
     border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
+
 .navbar-brand {
     margin-bottom: 30px !important;
     margin-left: 10px !important;
     font-size: 24px;
 }
-.nav-link {
-    color: black;
-    padding:12px 15px;
-    border-radius: 5px;
+
+.nav-item {
+    margin-bottom: 8px;
 }
+
+.nav-link {
+    color: #343a40;
+    padding: 12px 15px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
 .nav-link:hover {
     color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
 }
+
 .nav-link.active {
     background-color: #0d6efd;
     color: white !important;
 }
-canvas {
-    width: 100% !important;
-    height: auto !important;
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s;
 }
-.nav-tabs .nav-link {
-    color: black !important;
+
+.card:hover {
+    transform: translateY(-5px);
 }
-.nav-tabs .nav-link.active {
-    color: #007bff !important;
-    font-weight: bold;
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #495057;
+}
+
+.chart-container {
+    width: 100%;
+}
+
+.download-btn {
+    transition: transform 0.2s;
+}
+
+.download-btn:hover {
+    transform: scale(1.2);
 }
 
 .slanted {
@@ -54,7 +97,15 @@ canvas {
     transform: skewX(-20deg);
     color: #007bff;
 }
+
 .normal {
     font-size: larger;
     color: black;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .card {
+        margin-bottom: 20px;
+    }
 }

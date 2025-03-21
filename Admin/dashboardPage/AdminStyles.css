@@ -78,6 +78,10 @@ body {
     background-color: rgba(13, 110, 253, 0.1);
 }
 
+.nav-item {
+    margin-bottom: 8px;
+}
+
 .nav-link.active {
     background-color: #0d6efd;
     color: white !important;
@@ -196,6 +200,14 @@ body {
 .normal {
     font-size: larger;
     color: black;
+}
+
+.btn-danger {
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    width: 100%;
 }
 
 /* Fix for the card layout issue */

@@ -24,6 +24,9 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+.nav-item {
+    margin-bottom: 8px;
+}
 .nav-link {
     color: black;
     padding:12px 15px;
@@ -94,6 +97,14 @@ body {
 .normal {
     font-size: larger;
     color: black;
+}
+
+.btn-danger {
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    width: 100%;
 }
 
 .benefit-badge{
