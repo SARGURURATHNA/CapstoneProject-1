@@ -181,8 +181,52 @@ document.addEventListener("DOMContentLoaded", function () {
     //         history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
     //     });
     // }); 
+
+    document.getElementById('saveCategory').addEventListener('click', function() {
+        const categoryName = document.getElementById('categoryName').value.trim();
+        
+        if (!categoryName) {
+          alert('Please enter a category name');
+          return;
+        }
+        
+        saveCategory(categoryName);
+      });
 });
 
+function saveCategory(categoryName) {
+    fetch('http://localhost:8083/api/plans/categories/add', {  // Updated endpoint
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ categoryName: categoryName })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add category');
+          }
+    })
+    .then(() => {
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
+        modal.hide();
+        
+        // Clear the input field
+        document.getElementById('categoryName').value = '';
+        
+        // Refresh the categories list
+        // Show success message
+        alert('Category added successfully!');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to add category. Please try again.');
+      });
+
+}
+
+// function for deleting a plan.
 async function deletePlan(planId) {
     const confirmed = confirm("Are you sure you want to delete this plan?");
     if (!confirmed) return;

@@ -47,12 +47,28 @@ document.addEventListener("DOMContentLoaded", function () {
         else {
             mobileErr.textContent = "";
             
-            // Generate a new OTP
             generatedOTP = generateOTP();
-            
-            // Display OTP in alert (in a real application, this would be sent via SMS)
-            alert("OTP sent successfully! Your OTP is: " + generatedOTP);
-            
+
+            const response = await fetch(`${backendBaseUrl}/mobile/${mobileNumber}`);
+            const user = await response.json();
+
+            const userEmail = user.email;
+
+            // Send OTP to backend for emailing
+            fetch("http://localhost:8083/api/send-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: userEmail,
+                    otp: generatedOTP
+                })
+            })
+            .then(response => response.text())
+            .then(message => alert(message))
+            .catch(error => console.error("Error sending OTP:", error));
+                    
             // Clear previous OTP inputs
             document.querySelectorAll(".otp-input").forEach(input => {
                 input.value = "";
@@ -96,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
         if(!isValid) return;
         
-        // Check if generated OTP exists and matches the entered OTP
+        //Check if generated OTP exists and matches the entered OTP
         if (generatedOTP === "") {
             otpErr.textContent = "Please click 'Get OTP' first.";
             return;

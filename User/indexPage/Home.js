@@ -52,30 +52,4 @@ async function validateAndRecharge() {
     }
 }
 
-/**const exists = await isMobileNumberRegistered(mobileNumber);
-        if (!exists) {
-            mobileErr.textContent = "Mobile number not found in system.";
-            return;
-        }
-        else {
-            const response = await fetch(`${backendBaseUrl}/mobile/${mobileNumber}`);
-            const user = await response.json();
-            sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-            
-            // Reset the generatedOTP after successful login
-            generatedOTP = "";
-            
-            alert("Login successful! Redirecting to Plans page...");
-            sessionStorage.setItem("isLoggedIn", "true");
-            sessionStorage.setItem("mobileNumber", mobileNumber);
-            window.location.href = "../plansPage/Plans.html";
-        }
-            
-        const backendBaseUrl = "http://localhost:8083/api/users"; // your backend base URL
 
-    // Check if mobile number exists
-    async function isMobileNumberRegistered(mobileNumber) {
-        const response = await fetch(`${backendBaseUrl}/exists-by-mobile/${mobileNumber}`);
-        const exists = await response.json();
-        return exists;
-    }*/

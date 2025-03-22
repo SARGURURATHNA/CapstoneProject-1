@@ -110,7 +110,11 @@ fetch(`http://localhost:8083/api/recharge/buy${query}`, {
 }
 
 function goToHome() {
-window.location.href = "../indexPage/Home.html";
+    window.location.href = "../indexPage/Home.html";
+}
+
+function goToAccount(){
+    window.location.href = "../rechargehistoryPage/RechargeHistory.html";
 }
 
 function validateInputs(paymentMethod) {

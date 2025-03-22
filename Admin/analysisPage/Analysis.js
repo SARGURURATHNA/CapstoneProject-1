@@ -162,27 +162,27 @@ window.onload = function () {
 
 
     // Bar Chart (Plan Popularity)
-    fetch("http://localhost:8083/api/recharge/category-monthly-recharges")
+    fetch("http://localhost:8083/api/recharge/category-recharges")
     .then(response => response.json())
     .then(data => {
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        console.log(data);
 
-        const datasets = data.map((entry, index) => {
-            const colors = ['#007bff', '#28a745', '#ffcc00', '#ff5733', '#6c757d'];
-            return {
-                label: entry.categoryName,
-                data: entry.monthlyCounts.map(count => (count / 1000).toFixed(2)), // in thousands
-                backgroundColor: colors[index % colors.length]
-            };
-        });
+        // Extract categories and counts from the response map
+        const categories = Object.keys(data); // x-axis labels
+        const counts = Object.values(data).map(count => (count / 1000).toFixed(2)); // in thousands
+
+        const backgroundColors = ['#007bff', '#28a745', '#ffcc00', '#ff5733', '#6c757d'];
 
         const ctx = document.getElementById('planbarChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: months,
-                datasets: datasets
+                labels: categories,
+                datasets: [{
+                    label: 'Recharges (in thousands)',
+                    data: counts,
+                    backgroundColor: backgroundColors
+                }]
             },
             options: {
                 responsive: true,
@@ -197,7 +197,7 @@ window.onload = function () {
                     x: {
                         title: {
                             display: true,
-                            text: 'Months'
+                            text: 'Plan Categories'
                         }
                     }
                 },
@@ -205,7 +205,7 @@ window.onload = function () {
                     tooltip: {
                         callbacks: {
                             label: function (context) {
-                                return `${context.dataset.label}: ${context.raw}k`;
+                                return `${context.label}: ${context.raw}k`;
                             }
                         }
                     }
@@ -213,7 +213,10 @@ window.onload = function () {
             }
         });
     })
-    .catch(error => console.error("Failed to load chart data", error));
+    .catch(error => {
+        console.error("Error fetching recharge category data:", error);
+    });
+
 
     fetch("http://localhost:8083/api/transaction/payment-mode-counts")
     .then(response => response.json())
@@ -268,22 +271,48 @@ function downloadChartData(chartId) {
     if (!chart) return alert("Chart not found!");
 
     let labels = chart.data.labels;
-    let dataset = chart.data.datasets[0];
-
-    // Check if it's a Pie Chart (Pie Charts have multiple data points but no x-axis labels)
-    let isPieChart = chart.config.type === 'pie';
-
-    let data = [["Category", dataset.label || "Percentage (%)"]]; // Default to "Percentage (%)" for Pie Chart
-
-    if (isPieChart) {
-        // Fix: Pie chart lacks a dataset label, so we set a generic title
+    let chartType = chart.config.type;
+    let fileName = "";
+    let data = [];
+    
+    // Set proper headers based on chart type
+    if (chartId === "barChart") {
+        fileName = "Monthly_Recharges.xlsx";
+        data.push(["Month", "Recharges (Thousands)"]);
         labels.forEach((label, index) => {
-            data.push([label, dataset.data[index]]);
+            data.push([label, chart.data.datasets[0].data[index]]);
         });
-    } else {
-        // Bar and Line Charts: Labels are x-axis categories, dataset.data holds values
+    } 
+    else if (chartId === "lineChart") {
+        fileName = "Monthly_Revenue.xlsx";
+        data.push(["Month", "Revenue (₹ Thousands)"]);
         labels.forEach((label, index) => {
-            data.push([label, dataset.data[index]]);
+            data.push([label, chart.data.datasets[0].data[index]]);
+        });
+    }
+    else if (chartId === "planbarChart") {
+        fileName = "Plan_Popularity.xlsx";
+        // First row with headers - Month and all plan categories
+        let headerRow = ["Month"];
+        chart.data.datasets.forEach(dataset => {
+            headerRow.push(dataset.label);
+        });
+        data.push(headerRow);
+        
+        // Add data for each month
+        labels.forEach((month, monthIndex) => {
+            let rowData = [month];
+            chart.data.datasets.forEach(dataset => {
+                rowData.push(dataset.data[monthIndex]);
+            });
+            data.push(rowData);
+        });
+    }
+    else if (chartId === "doughnutChart") {
+        fileName = "Payment_Modes.xlsx";
+        data.push(["Payment Mode", "Count"]);
+        labels.forEach((label, index) => {
+            data.push([label, chart.data.datasets[0].data[index]]);
         });
     }
 
@@ -291,9 +320,6 @@ function downloadChartData(chartId) {
     let ws = XLSX.utils.aoa_to_sheet(data);
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-    // Generate filename dynamically, avoiding undefined label
-    let fileName = isPieChart ? "Plan_Popularity.xlsx" : `${dataset.label.replace(/\s+/g, '_')}.xlsx`;
 
     // Download Excel file
     XLSX.writeFile(wb, fileName);

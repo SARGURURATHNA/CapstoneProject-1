@@ -65,7 +65,8 @@ async function loadSubscribersWithPlans() {
         }
 
         subscribers = mergedSubscribers;
-        displaySubscribers(subscribers); // Call your existing function
+        // displaySubscribers(subscribers);
+        paginateSubscribers(subscribers);
 
     } catch (err) {
         console.error("Failed to load subscribers:", err);
@@ -125,6 +126,37 @@ function displaySubscribers(subscribers) {
         });
     });
 }
+
+const subsPerPage = 2; // Number of subscribers per page
+let currentPage = 1;
+
+function paginateSubscribers(subscribers, page = 1) {
+    const startIndex = (page - 1) * subsPerPage;
+    const endIndex = startIndex + subsPerPage;
+    const paginatedSubscribers = subscribers.slice(startIndex, endIndex);
+    displaySubscribers(paginatedSubscribers);
+    setupPagination(subscribers, page);
+}
+
+function setupPagination(subscribers, activePage) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(subscribers.length / subsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === activePage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentPage = i;
+            paginateSubscribers(subscribers, currentPage);
+        });
+        pagination.appendChild(li);
+    }
+}
+
 
 document.getElementById("filterDropdown").addEventListener("change", function () {
     const filterValue = this.value;
