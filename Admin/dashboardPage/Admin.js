@@ -1,11 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     loadSubscribersWithPlans(); // Fetch and display from backend
 
-    // Setup event handlers
-    // if (typeof setupEventHandlers === 'function') {
-    //     setupEventHandlers();
-    // }
-    
     // Setup profile modal
     if (typeof setupProfileModal === 'function') {
         setupProfileModal();
@@ -32,41 +27,21 @@ function loadDashboardMetrics() {
         });
 }
 
+let currentPage = 0;
+let currentFilter = "all";
+const subsPerPage = 2;
+
 let subscribers = [];
 
-async function loadSubscribersWithPlans() {
+async function loadSubscribersWithPlans(page = 0, filter = "all") {
     try {
-        const res = await fetch('http://localhost:8083/api/users/subscribers');
-        const users = await res.json(); // assuming it returns a list of users with userId        
-        const mergedSubscribers = [];
-
-        for (const user of users) {
-            const planRes = await fetch(`http://localhost:8083/api/recharge/current-plan/details?userId=${user.userId}`);
-            const planData = await planRes.json();
-
-            // Merge user and plan info
-            const merged = {
-                name: planData.name,
-                phone: planData.mobile,
-                userId: planData.userId,
-
-                // Plan details
-                cost: `₹${planData.cost}`,
-                date: planData.expiryDate,
-                transactionId: planData.transactionId || "TXN00000", // dummy or from API if available
-                paymentMode: planData.paymentMode || "N/A",
-                validity: `${planData.validity} Days`,
-                data: planData.data,
-                sms: planData.sms,
-                calls: planData.calls
-            };
-
-            mergedSubscribers.push(merged);
-        }
-
-        subscribers = mergedSubscribers;
-        // displaySubscribers(subscribers);
-        paginateSubscribers(subscribers);
+        const res = await fetch(`http://localhost:8083/api/recharge/subscribers/paginated?page=${page}&size=${subsPerPage}&filter=${filter}`);
+        const data = await res.json(); // Spring Page object
+        
+        subscribers = data.subscribers;
+        console.log(subscribers);
+        displaySubscribers(subscribers);
+        setupPagination(data.totalPages, data.number);
 
     } catch (err) {
         console.error("Failed to load subscribers:", err);
@@ -89,7 +64,7 @@ function displaySubscribers(subscribers) {
         `;
         return;
     }
-    subscribers.forEach((subscriber, index) => {
+    subscribers.forEach((subscriber) => {
         const colDiv = document.createElement("div");
         colDiv.className = "col-lg-6 col-xl-6 mb-4";
         
@@ -99,15 +74,15 @@ function displaySubscribers(subscribers) {
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="mb-1">${subscriber.name}</h5>
-                            <p class="mb-0 text-muted"><i class="material-icons small vertical-align-middle">phone</i> ${subscriber.phone}</p>
+                            <p class="mb-0 text-muted"><i class="material-icons small vertical-align-middle">phone</i> ${subscriber.mobile}</p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card-body pb-0">
                     <div class="mb-3">
-                        <p class="mb-1"><strong>Expiring:</strong> <span class="text-danger">${subscriber.date}</span></p>
-                        <p class="mb-1"><strong>Plan:</strong> ${subscriber.cost} / ${subscriber.validity}</p>
+                        <p class="mb-1"><strong>Expiring:</strong> <span class="text-danger">${subscriber.expiryDate}</span></p>
+                        <p class="mb-1"><strong>Plan:</strong> ₹${subscriber.cost} / ${subscriber.validity}</p>
                     </div>
                 </div>
                 
@@ -127,9 +102,6 @@ function displaySubscribers(subscribers) {
     });
 }
 
-const subsPerPage = 2; // Number of subscribers per page
-let currentPage = 1;
-
 function paginateSubscribers(subscribers, page = 1) {
     const startIndex = (page - 1) * subsPerPage;
     const endIndex = startIndex + subsPerPage;
@@ -138,20 +110,18 @@ function paginateSubscribers(subscribers, page = 1) {
     setupPagination(subscribers, page);
 }
 
-function setupPagination(subscribers, activePage) {
+function setupPagination(totalPages, activePage) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
-    const totalPages = Math.ceil(subscribers.length / subsPerPage);
-
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 0; i < totalPages; i++) {
         const li = document.createElement('li');
         li.className = `page-item ${i === activePage ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
         li.addEventListener('click', (e) => {
             e.preventDefault();
             currentPage = i;
-            paginateSubscribers(subscribers, currentPage);
+            loadSubscribersWithPlans(currentPage, currentFilter);
         });
         pagination.appendChild(li);
     }
@@ -164,47 +134,10 @@ document.getElementById("filterDropdown").addEventListener("change", function ()
 });
 
 function filterSubscribersByExpiry(filter) {
-    if (filter === "all") {
-        displaySubscribers(subscribers);
-        return;
-    }
-
-    const now = new Date();
-    let thresholdDate;
-
-    switch (filter) {
-        case "3days":
-            thresholdDate = new Date(now);
-            thresholdDate.setDate(thresholdDate.getDate() + 3);
-            break;
-        case "2weeks":
-            thresholdDate = new Date(now);
-            thresholdDate.setDate(thresholdDate.getDate() + 14);
-            break;
-        case "1month":
-            thresholdDate = new Date(now);
-            thresholdDate.setMonth(thresholdDate.getMonth() + 1);
-            break;
-        default:
-            displaySubscribers(subscribers);
-            return;
-    }
-
-    const filtered = subscribers.filter(sub => {
-        const expiry = new Date(sub.date);
-        return expiry <= thresholdDate && expiry >= now;
-    });
-
-    displaySubscribers(filtered);
+    currentFilter = filter;
+    currentPage = 0;
+    loadSubscribersWithPlans(currentPage, currentFilter);
 }
-
-
-// function setupEventHandlers() {
-//     // Setup download all button
-//     document.getElementById("downloadAll").addEventListener("click", () => {
-//         downloadAllExcel();
-//     });
-// }
 
 // Function to download all subscribers data
 function downloadAllExcel() {

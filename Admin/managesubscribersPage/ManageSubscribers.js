@@ -1,15 +1,26 @@
 let subscribers = [];
 
 // Function to fetch all subscribers from the API
-async function fetchSubscribers() {
+let currentPage = 0;
+let pageSize = 5;
+let totalPages = 0;
+
+async function fetchSubscribers(page = 0) {
+    const query = document.getElementById('searchInput').value.trim();
+    const status = document.getElementById('statusFilter').value;
+
     try {
-        const response = await fetch('http://localhost:8083/api/users/subscribers');
+        const response = await fetch(`http://localhost:8083/api/users/subscribers?page=${page}&size=${pageSize}&search=${query}&status=${status}`);
         if (!response.ok) {
             throw new Error('Failed to fetch subscribers');
         }
-        subscribers = await response.json();
-        console.log(subscribers);
+        const data = await response.json();
+        subscribers = data.subscribers || [];
+        currentPage = data.currentPage;
+        totalPages = data.totalPages;
+
         loadSubscribers(subscribers);
+        renderPagination();
     } catch (error) {
         console.error('Error fetching subscribers:', error);
         document.getElementById("SubsContainer").innerHTML = `
@@ -19,6 +30,7 @@ async function fetchSubscribers() {
         `;
     }
 }
+
 
 function loadSubscribers(filtered = subscribers) {
     const container = document.getElementById("SubsContainer");
@@ -48,12 +60,6 @@ function loadSubscribers(filtered = subscribers) {
                     <a href="../SubscribersReport/SubscriberReport.html?userId=${subscriber.userId}" class="btn btn-outline-primary btn-sm view-details-btn">View Details</a>
                 </div>
             </div>
-            <div class="details mt-3">
-                <p><strong>Alternate Number:</strong> ${alternateNumber}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Address:</strong> ${address}</p>
-                <p><strong>DOB:</strong> ${dob}</p>
-            </div>
         `;
         container.appendChild(subscriberDiv);
     });
@@ -72,27 +78,135 @@ function statusBadge(status) {
     return "light";
 }
 
-// Function to handle search and filter
-function handleSearchFilter() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const filterSelect = document.getElementById('statusFilter');
-    const filter = filterSelect ? filterSelect.value : "";
+document.getElementById('searchInput').addEventListener('input', debounce(handleSearchFilter, 300));
+document.getElementById('statusFilter').addEventListener('change', handleSearchFilter);
 
-    const filtered = subscribers.filter(sub => {
-        const firstName = sub.firstName || sub.first_name || '';
-        const lastName = sub.lastName || sub.last_name || '';
-        const mobileNumber = sub.mobileNumber || sub.mobile_number || '';
-        const userStatus = sub.status || sub.user_status || '';
-        
-        const matchesName = (firstName + ' ' + lastName).toLowerCase().includes(query);
-        const matchesMobile = mobileNumber.includes(query);
-        const matchesStatus = filter === "" || userStatus === filter;
-        
-        return (matchesName || matchesMobile) && matchesStatus;
-    });
-
-    loadSubscribers(filtered);
+// Optional debounce utility to limit search calls
+function debounce(func, delay) {
+    let timeout;
+    return function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, delay);
+    };
 }
+
+function renderPagination() {
+    const container = document.getElementById("paginationControls");
+    container.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    // Create pagination container
+    const paginationNav = document.createElement('nav');
+    paginationNav.setAttribute('aria-label', 'Page navigation');
+    const paginationUl = document.createElement('ul');
+    paginationUl.className = 'pagination justify-content-center';
+    
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+    const prevButton = document.createElement('button');
+    prevButton.className = 'page-link';
+    prevButton.innerHTML = '&laquo;';
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 0) fetchSubscribers(currentPage - 1);
+    });
+    prevLi.appendChild(prevButton);
+    paginationUl.appendChild(prevLi);
+
+    // Page number buttons
+    // Determine which page numbers to show
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages - 1, currentPage + 2);
+    
+    // Ensure we always show at least 5 pages if available
+    if (endPage - startPage < 4) {
+        if (startPage === 0) {
+            endPage = Math.min(4, totalPages - 1);
+        } else if (endPage === totalPages - 1) {
+            startPage = Math.max(0, totalPages - 5);
+        }
+    }
+
+    // First page button if not starting from the first page
+    if (startPage > 0) {
+        const firstLi = document.createElement('li');
+        firstLi.className = 'page-item';
+        const firstButton = document.createElement('button');
+        firstButton.className = 'page-link';
+        firstButton.textContent = '1';
+        firstButton.addEventListener('click', () => fetchSubscribers(0));
+        firstLi.appendChild(firstButton);
+        paginationUl.appendChild(firstLi);
+        
+        // Add ellipsis if there's a gap
+        if (startPage > 1) {
+            const ellipsisLi = document.createElement('li');
+            ellipsisLi.className = 'page-item disabled';
+            const ellipsisSpan = document.createElement('span');
+            ellipsisSpan.className = 'page-link';
+            ellipsisSpan.innerHTML = '&hellip;';
+            ellipsisLi.appendChild(ellipsisSpan);
+            paginationUl.appendChild(ellipsisLi);
+        }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        const pageButton = document.createElement('button');
+        pageButton.className = 'page-link';
+        pageButton.textContent = i + 1;
+        pageButton.addEventListener('click', () => fetchSubscribers(i));
+        pageLi.appendChild(pageButton);
+        paginationUl.appendChild(pageLi);
+    }
+
+    // Add ellipsis and last page if needed
+    if (endPage < totalPages - 1) {
+        if (endPage < totalPages - 2) {
+            const ellipsisLi = document.createElement('li');
+            ellipsisLi.className = 'page-item disabled';
+            const ellipsisSpan = document.createElement('span');
+            ellipsisSpan.className = 'page-link';
+            ellipsisSpan.innerHTML = '&hellip;';
+            ellipsisLi.appendChild(ellipsisSpan);
+            paginationUl.appendChild(ellipsisLi);
+        }
+        
+        const lastLi = document.createElement('li');
+        lastLi.className = 'page-item';
+        const lastButton = document.createElement('button');
+        lastButton.className = 'page-link';
+        lastButton.textContent = totalPages;
+        lastButton.addEventListener('click', () => fetchSubscribers(totalPages - 1));
+        lastLi.appendChild(lastButton);
+        paginationUl.appendChild(lastLi);
+    }
+
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+    const nextButton = document.createElement('button');
+    nextButton.className = 'page-link';
+    nextButton.innerHTML = '&raquo;';
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages - 1) fetchSubscribers(currentPage + 1);
+    });
+    nextLi.appendChild(nextButton);
+    paginationUl.appendChild(nextLi);
+
+    paginationNav.appendChild(paginationUl);
+    container.appendChild(paginationNav);
+}
+
+
+// Function to handle search and filter
+// function handleSearchFilter() {
+//     currentPage = 0; // reset to first page on new search/filter
+//     fetchSubscribers(currentPage);
+// }
 
 // Function to handle edit button click
 function handleEditClick(event) {
@@ -134,17 +248,6 @@ async function handleUpdate() {
         const index = document.getElementById('editIndex').value;
         const userId = document.getElementById('editUserId').value;
         const newStatus = document.getElementById('editStatus').value;
-        
-        // Prepare data for update - just sending the status
-        // const updatedData = {
-        //     userStatus: newStatus
-        // };
-        
-        // If backend expects full user object, include all fields
-        // const fullUpdatedData = {
-        //     ...subscribers[index],
-        //     ...updatedData
-        // };
         
         // Show loading state
         const updateBtn = document.getElementById('updateBtn');
@@ -214,35 +317,17 @@ function handleLogout() {
 document.addEventListener("DOMContentLoaded", () => {
     // Fetch subscribers when page loads
     fetchSubscribers();
-
-    // Event listener for view button clicks
-    document.getElementById("SubsContainer").addEventListener("click", (event) => {
-        if (event.target.classList.contains("view-btn")) {
-            const detailsDiv = event.target.closest(".subscriber-item").querySelector(".details");
-            // Toggle visibility of details
-            if (detailsDiv.style.display === "none" || !detailsDiv.style.display) {
-                detailsDiv.style.display = "block";
-            } else {
-                detailsDiv.style.display = "none";
-            }
-        }
-    });
-
-    // Add event listener for search input
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', handleSearchFilter);
-    }
-    
-    // Add event listener for status filter if it exists
-    const statusFilter = document.getElementById('statusFilter');
-    if (statusFilter) {
-        statusFilter.addEventListener('change', handleSearchFilter);
-    }
-
     // Add event listener for update button
     const updateBtn = document.getElementById('updateBtn');
     if (updateBtn) {
         updateBtn.addEventListener('click', handleUpdate);
     }
+
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearchFilter, 300));
+    document.getElementById('statusFilter').addEventListener('change', handleSearchFilter);
 });
+
+function handleSearchFilter() {
+    currentPage = 0; // reset to first page on new search/filter
+    fetchSubscribers(currentPage);
+}

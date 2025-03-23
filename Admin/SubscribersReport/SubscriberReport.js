@@ -211,6 +211,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const fileName = `${userName}_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(wb, fileName);
     });
+
+    const goBackBtn = document.getElementById("goBackBtn");
+
+    goBackBtn.addEventListener("click", function () {
+        if (document.referrer) {
+            // Go back to the referring page
+            window.location.href = document.referrer;
+        } else {
+            // Fallback if referrer is not available
+            window.history.back();
+        }
+    });
 });
 
 function handleLogout() {

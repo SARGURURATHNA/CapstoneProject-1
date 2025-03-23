@@ -25,6 +25,14 @@ body[data-bs-theme="light"] {
     transition: 0.3s;
 }
 
+.pagination li a {
+    color: #000;
+  }
+  .pagination .active a {
+    background-color: #343a40;
+    color: #fff;
+  }  
+
 .benefit-badge{
     position: absolute;
     top: 10px; 

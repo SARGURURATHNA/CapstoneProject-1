@@ -25,6 +25,10 @@ function selectPlan(planId, cost, validity, data, sms, calls) {
     window.location.href = url;
 }
 
+let currentPage = 0;
+let totalPages = 0;
+const pageSize = 8;
+
 document.addEventListener("DOMContentLoaded", function () {
     const planContainer = document.querySelector(".row.g-3");
     const tabs = document.querySelectorAll(".nav-tabs .nav-link");
@@ -36,18 +40,176 @@ document.addEventListener("DOMContentLoaded", function () {
         return urlParams.get(param);
     }
 
-    async function fetchPlans(category) {
+    async function fetchPlans(category, filters = {}, page=0) {
         try {
-            const response = await fetch(`http://localhost:8083/api/plans/category?category=${encodeURIComponent(category)}`);
+            const params = new URLSearchParams({
+                category: category,
+                page: page,
+                size: pageSize, // Adjust if you implement pagination later
+                ...filters
+            });
+    
+            const response = await fetch(`http://localhost:8083/api/plans/category?${params}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const plans = await response.json();
-            return plans;
+            const plansPage = await response.json();
+            currentPage = plansPage.number !== undefined ? plansPage.number : 0;
+            totalPages = plansPage.totalPages !== undefined ? plansPage.totalPages : 1;
+            return plansPage.content || [];
         } catch (error) {
             console.error("Error fetching plans:", error);
             return [];
         }
+    }
+
+    function updatePaginationControls() {
+        const paginationContainer = document.getElementById("paginationControls");
+        paginationContainer.innerHTML = "";
+        
+        if (totalPages <= 1) {
+            // Hide pagination if there's only one page
+            paginationContainer.parentElement.style.display = "none";
+            return;
+        } else {
+            paginationContainer.parentElement.style.display = "block";
+        }
+        
+        // Previous button
+        const prevLi = document.createElement("li");
+        prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+        const prevBtn = document.createElement("button");
+        prevBtn.className = "page-link";
+        prevBtn.innerHTML = "&laquo;";
+        prevBtn.setAttribute("aria-label", "Previous");
+        if (currentPage > 0) {
+            prevBtn.addEventListener("click", () => goToPage(currentPage - 1));
+        }
+        prevLi.appendChild(prevBtn);
+        paginationContainer.appendChild(prevLi);
+    
+        // Page buttons
+        const maxButtons = 5; // Maximum number of page buttons to display
+        const startPage = Math.max(0, Math.min(currentPage - Math.floor(maxButtons / 2), totalPages - maxButtons));
+        const endPage = Math.min(startPage + maxButtons, totalPages);
+    
+        // Add first page button if not visible in range
+        if (startPage > 0) {
+            const firstLi = document.createElement("li");
+            firstLi.className = "page-item";
+            const firstBtn = document.createElement("button");
+            firstBtn.className = "page-link";
+            firstBtn.textContent = "1";
+            firstBtn.addEventListener("click", () => goToPage(0));
+            firstLi.appendChild(firstBtn);
+            paginationContainer.appendChild(firstLi);
+    
+            // Add ellipsis if there's a gap
+            if (startPage > 1) {
+                const ellipsisLi = document.createElement("li");
+                ellipsisLi.className = "page-item disabled";
+                const ellipsisSpan = document.createElement("span");
+                ellipsisSpan.className = "page-link";
+                ellipsisSpan.innerHTML = "&hellip;";
+                ellipsisLi.appendChild(ellipsisSpan);
+                paginationContainer.appendChild(ellipsisLi);
+            }
+        }
+    
+        // Numbered page buttons
+        for (let i = startPage; i < endPage; i++) {
+            const pageLi = document.createElement("li");
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            const pageBtn = document.createElement("button");
+            pageBtn.className = "page-link";
+            pageBtn.textContent = i + 1;
+            if (i !== currentPage) {
+                pageBtn.addEventListener("click", () => goToPage(i));
+            }
+            pageLi.appendChild(pageBtn);
+            paginationContainer.appendChild(pageLi);
+        }
+    
+        // Add last page button if not visible in range
+        if (endPage < totalPages) {
+            // Add ellipsis if there's a gap
+            if (endPage < totalPages - 1) {
+                const ellipsisLi = document.createElement("li");
+                ellipsisLi.className = "page-item disabled";
+                const ellipsisSpan = document.createElement("span");
+                ellipsisSpan.className = "page-link";
+                ellipsisSpan.innerHTML = "&hellip;";
+                ellipsisLi.appendChild(ellipsisSpan);
+                paginationContainer.appendChild(ellipsisLi);
+            }
+    
+            const lastLi = document.createElement("li");
+            lastLi.className = "page-item";
+            const lastBtn = document.createElement("button");
+            lastBtn.className = "page-link";
+            lastBtn.textContent = totalPages;
+            lastBtn.addEventListener("click", () => goToPage(totalPages - 1));
+            lastLi.appendChild(lastBtn);
+            paginationContainer.appendChild(lastLi);
+        }
+    
+        // Next button
+        const nextLi = document.createElement("li");
+        nextLi.className = `page-item ${currentPage >= totalPages - 1 ? 'disabled' : ''}`;
+        const nextBtn = document.createElement("button");
+        nextBtn.className = "page-link";
+        nextBtn.innerHTML = "&raquo;";
+        nextBtn.setAttribute("aria-label", "Next");
+        if (currentPage < totalPages - 1) {
+            nextBtn.addEventListener("click", () => goToPage(currentPage + 1));
+        }
+        nextLi.appendChild(nextBtn);
+        paginationContainer.appendChild(nextLi);
+    }
+
+    async function goToPage(page) {
+        if (page < 0 || page >= totalPages) return;
+        
+        const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+        const currentCategory = activeTab ? activeTab.innerText.trim() : "";
+        
+        // Get current filters (if any)
+        const filters = getCurrentFilters();
+        
+        // Fetch plans for the specified page
+        plansData[currentCategory] = await fetchPlans(currentCategory, filters, page);
+        
+        // Display plans and update pagination
+        displayPlans(currentCategory, filters, false); // Pass false to avoid fetching again
+    }
+
+    function getCurrentFilters() {
+        const selectedValidity = [];
+        const selectedPrice = [];
+    
+        if (document.getElementById("validity1Month")?.checked) selectedValidity.push([28, 30]);
+        if (document.getElementById("validity3Months")?.checked) selectedValidity.push([80, 90]);
+        if (document.getElementById("validity6Months")?.checked) selectedValidity.push([170, 180]);
+        if (document.getElementById("validity1Year")?.checked) selectedValidity.push([360, 365]);
+    
+        if (document.getElementById("priceUnder500")?.checked) selectedPrice.push([0, 499]);
+        if (document.getElementById("price500to1000")?.checked) selectedPrice.push([500, 1000]);
+        if (document.getElementById("price1000to2000")?.checked) selectedPrice.push([1000, 2000]);
+        if (document.getElementById("priceAbove2000")?.checked) selectedPrice.push([2001, 100000]);
+    
+        const filters = {};
+        
+        if (selectedValidity.length > 0) {
+            filters.minValidity = Math.min(...selectedValidity.map(v => v[0]));
+            filters.maxValidity = Math.max(...selectedValidity.map(v => v[1]));
+        }
+    
+        if (selectedPrice.length > 0) {
+            filters.minPrice = Math.min(...selectedPrice.map(p => p[0]));
+            filters.maxPrice = Math.max(...selectedPrice.map(p => p[1]));
+        }
+        
+        return filters;
     }
 
     function formatOttBenefits(plan) {
@@ -61,13 +223,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Function to display plans
-    async function displayPlans(category) {
-        if (!plansData[category]) {
-            plansData[category] = await fetchPlans(category);
-        }
+    async function displayPlans(category, filters = {},fetchNewData = true) {
+        if(fetchNewData){
+        if (!filters || Object.keys(filters).length === 0) {
+            if (!plansData[category]) {
+                plansData[category] = await fetchPlans(category);
+            }
+        } else {
+            plansData[category] = await fetchPlans(category, filters); // filtered results
+        }}
+    
+        const plans = plansData[category];
         planContainer.innerHTML = ""; // Clear existing plans
-
-        // Find the tab with the matching category and make it active
+    
         tabs.forEach(tab => {
             if (tab.innerText.trim() === category) {
                 tabs.forEach(t => t.classList.remove("active"));
@@ -77,8 +245,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         // Check if plans exist for the category
-        if (plansData[category] && plansData[category].length > 0) {
-            plansData[category].forEach(plan => {
+        if (plans && plans.length > 0) {
+            plans.forEach(plan => {
                 const benefits = formatOttBenefits(plan);
                 const benefitsHTML = benefits 
                 ? `<div class="benefit-badge position-absolute top-0 end-0 m-2 text-white d-flex align-items-center rounded-pill px-3 py-1" style="z-index:1;">
@@ -136,6 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             planContainer.innerHTML = "<p>Sorry! Currently, no plans are available for this category.</p>";
         }
+        updatePaginationControls();
     }
 
     // Function to initialize category tabs
@@ -195,15 +364,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize the page
     initializeTabs();
 
-    // Handle tab click event (switching categories within the page)
-    // tabs.forEach(tab => {
-    //     tab.addEventListener("click", function (event) {
-    //         event.preventDefault();
-    //         const category = this.innerText.trim();
-    //         displayPlans(category);
-    //         history.pushState(null, "", `?category=${encodeURIComponent(category)}`); // Update URL without reloading
-    //     });
-    // });
+    document.getElementById("applyFilter").addEventListener("click", () => {
+        const filters = getCurrentFilters();
+    
+    // Get the currently selected tab/category
+    const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+    const currentCategory = activeTab ? activeTab.innerText.trim() : "";
+    
+    // Reset to first page when applying filters
+    currentPage = 0;
+    
+    // Hide modal
+    const filterModal = bootstrap.Modal.getInstance(document.getElementById("filterModal"));
+    filterModal.hide();
+    
+    // Fetch & display plans with filters
+    displayPlans(currentCategory, filters);
+    });
+    
 });
 
 function showBenefitsModal(benefit) {
