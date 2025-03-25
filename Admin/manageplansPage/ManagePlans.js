@@ -464,7 +464,6 @@ document.getElementById("planForm").addEventListener("submit", async function (e
     const activeTab = document.querySelector("#categoryTabs .nav-link.active");
     const categoryName = activeTab ? activeTab.dataset.category : "General";
 
-
     const requestData = {
         price,
         validity,
@@ -490,12 +489,23 @@ document.getElementById("planForm").addEventListener("submit", async function (e
         });
 
         if (response.ok) {
-            const result = await response.json();
-            console.log(`${planId ? "Updated" : "Created"} plan:`, result);
-            // Refresh the plan list
-            //initializeTabs();
-            bootstrap.Modal.getInstance(document.getElementById('planModal')).hide();
+            const contentType = response.headers.get("content-type");
+            let result;
+
+            if (contentType && contentType.includes("application/json")) {
+                try {
+                    result = await response.json();
+                    console.log(`${planId ? "Updated" : "Created"} plan:`, result);
+                } catch (jsonError) {
+                    console.warn("Failed to parse JSON:", jsonError);
+                }
+            } else {
+                console.warn("Unexpected content type or empty response body.");
+            }
+
             await window.refreshCurrentPlans();
+            bootstrap.Modal.getInstance(document.getElementById('planModal')).hide();
+
         } else {
             throw new Error(`Failed to ${planId ? "update" : "create"} plan`);
         }
@@ -504,7 +514,6 @@ document.getElementById("planForm").addEventListener("submit", async function (e
         alert("Something went wrong while saving the plan.");
     }
 });
-
 
 function openAddPlanModal() {
     document.getElementById("editIndex").value = "";
@@ -529,8 +538,6 @@ function openEditModal(plan) {
     const modal = new bootstrap.Modal(document.getElementById('planModal'));
     modal.show();
 }
-
-
 
 function showBenefitsModal(benefit) {
     const [subsString, categoriesString, validity, totalData, cost] = benefit.split("|");
@@ -590,3 +597,30 @@ function handleLogout() {
     sessionStorage.clear(); // This removes ALL session storage keys
     window.location.href = "../loginPage/Login.html";
 }
+
+function setupClearFilterButton() {
+    const clearFilterBtn = document.getElementById("clearFilter");
+    if (!clearFilterBtn) return;
+    
+    clearFilterBtn.addEventListener("click", function() {
+        console.log("Clear filter clicked"); // Debug log
+        
+        // Uncheck all filter checkboxes
+        const filterCheckboxes = document.querySelectorAll('#filterModal input[type="checkbox"]');
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Get the currently selected tab/category
+        const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+        const currentCategory = activeTab ? activeTab.innerText.trim() : "";
+        
+        // Force page reset
+        window.currentPage = 0;
+        
+        // Reload the page with just the category parameter
+        window.location.href = `?category=${encodeURIComponent(currentCategory)}`;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", setupClearFilterButton);

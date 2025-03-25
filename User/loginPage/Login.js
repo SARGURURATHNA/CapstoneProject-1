@@ -5,34 +5,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const mobileErr = document.getElementById("mobileErr");
     const otpErr = document.getElementById("otpErr");
     
-    // Variable to store the generated OTP
-    let generatedOTP = "";
-
-    const backendBaseUrl = "http://localhost:8083/api/users"; // your backend base URL
+    const backendBaseUrl = "http://localhost:8083/api"; // your backend base URL
 
     // Check if mobile number exists
-    async function isMobileNumberRegistered(mobileNumber) {
-        const response = await fetch(`${backendBaseUrl}/exists-by-mobile/${mobileNumber}`);
-        const exists = await response.json();
-        return exists;
-    }
-
-    // Function to generate a random 6-digit OTP
-    function generateOTP() {
-        const digits = '0123456789';
-        let OTP = '';
-        
-        for (let i = 0; i < 6; i++) {
-            OTP += digits[Math.floor(Math.random() * 10)];
-        }
-        
-        return OTP;
-    }
+    // async function isMobileNumberRegistered(mobileNumber) {
+    //     const response = await fetch(`${backendBaseUrl}/exists-by-mobile/${mobileNumber}`);
+    //     const exists = await response.json();
+    //     return exists;
+    // }
 
     getOtpButton.addEventListener("click", async function (event) {
         const mobileNumber = mobileInput.value.trim();
 
-        const exists = await isMobileNumberRegistered(mobileNumber);
+        // Validate mobile number
         if (mobileNumber === "") {
             mobileErr.textContent = "Enter mobile number to get OTP.";
             return;
@@ -40,42 +25,48 @@ document.addEventListener("DOMContentLoaded", function () {
             mobileErr.textContent = "Invalid mobile number. Enter a 10-digit number.";
             return;
         } 
-        else if (!exists) {
-            mobileErr.textContent = "Mobile number not found in system.";
-            return;
-        }
-        else {
-            mobileErr.textContent = "";
-            
-            generatedOTP = generateOTP();
-
-            const response = await fetch(`${backendBaseUrl}/mobile/${mobileNumber}`);
-            const user = await response.json();
-
-            const userEmail = user.email;
-
-            // Send OTP to backend for emailing
-            fetch("http://localhost:8083/api/send-otp", {
+        
+        // Check if mobile number exists in the system
+        // const exists = await isMobileNumberRegistered(mobileNumber);
+        // if (!exists) {
+        //     mobileErr.textContent = "Mobile number not found in system.";
+        //     return;
+        // }
+        
+        // Clear any previous error messages
+        mobileErr.textContent = "";
+        
+        
+        // Send request to the backend to send OTP via Twilio
+        try {
+            const otpResponse = await fetch(`${backendBaseUrl}/auth/send-otp`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    email: userEmail,
-                    otp: generatedOTP
+                    mobile_number: "+91"+mobileNumber
                 })
-            })
-            .then(response => response.text())
-            .then(message => alert(message))
-            .catch(error => console.error("Error sending OTP:", error));
-                    
-            // Clear previous OTP inputs
-            document.querySelectorAll(".otp-input").forEach(input => {
-                input.value = "";
             });
             
-            // Focus on first OTP input field
-            document.querySelector(".otp-input").focus();
+            if (otpResponse.ok) {
+                const responseData = await otpResponse.json();
+                alert(responseData.message || "OTP sent to your mobile number.");
+                
+                // Clear previous OTP inputs
+                document.querySelectorAll(".otp-input").forEach(input => {
+                    input.value = "";
+                });
+                
+                // Focus on first OTP input field
+                document.querySelector(".otp-input").focus();
+            } else {
+                const errorData = await otpResponse.json();
+                alert(errorData.message || "Failed to send OTP. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+            alert("Failed to send OTP. Please try again.");
         }
     });
 
@@ -90,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let isValid = true;
 
+        // Validate inputs
         if (mobileNumber === "") {
             mobileErr.textContent = "Please enter Mobile Number.";
             isValid = false;
@@ -104,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
             otpErr.textContent = "Please enter OTP.";
             isValid = false;
         } else if (!/^\d{6}$/.test(otp)) {
-            otpErr.textContent = "OTP must be a maximum of 6 digits.";
+            otpErr.textContent = "OTP must be 6 digits.";
             isValid = false;
         } else {
             otpErr.textContent = "";
@@ -112,34 +104,60 @@ document.addEventListener("DOMContentLoaded", function () {
     
         if(!isValid) return;
         
-        //Check if generated OTP exists and matches the entered OTP
-        if (generatedOTP === "") {
-            otpErr.textContent = "Please click 'Get OTP' first.";
-            return;
-        }
+        // Check if mobile number exists in system
+        // const exists = await isMobileNumberRegistered(mobileNumber);
+        // if (!exists) {
+        //     mobileErr.textContent = "Mobile number not found in system.";
+        //     return;
+        // }
         
-        if (otp !== generatedOTP) {
-            otpErr.textContent = "Invalid OTP. Please try again.";
-            return;
-        }
-
-        const exists = await isMobileNumberRegistered(mobileNumber);
-        if (!exists) {
-            mobileErr.textContent = "Mobile number not found in system.";
-            return;
-        }
-        else {
-            const response = await fetch(`${backendBaseUrl}/mobile/${mobileNumber}`);
-            const user = await response.json();
-            sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+        // Verify OTP through Twilio
+        try {
+            const verifyResponse = await fetch(`${backendBaseUrl}/auth/verify-otp`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    mobile_number: "+91"+mobileNumber,
+                    otp: otp
+                })
+            });
             
-            // Reset the generatedOTP after successful login
-            generatedOTP = "";
-            
-            alert("Login successful! Redirecting to Plans page...");
-            sessionStorage.setItem("isLoggedIn", "true");
-            sessionStorage.setItem("mobileNumber", mobileNumber);
-            window.location.href = "../plansPage/Plans.html";
+            if (verifyResponse.ok) {
+                // Proceed with user login
+                const loginResponse = await fetch(`${backendBaseUrl}/auth/user-login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        mobile_number: mobileNumber
+                    })
+                });
+                
+                if (loginResponse.ok) {
+                    const loginData = await loginResponse.json();
+                    
+                    // Store authentication data securely
+                    sessionStorage.setItem("accessToken", loginData.accessToken);
+                    sessionStorage.setItem("userRole", loginData.role);
+                    sessionStorage.setItem("lastLogin", loginData.lastLogin);
+                    sessionStorage.setItem("mobileNumber", mobileNumber);
+                    
+                    alert("Login successful! Redirecting to Plans page...");
+                    window.location.href = "../plansPage/Plans.html";
+                } else {
+                    const errorData = await loginResponse.json();
+                    otpErr.textContent = errorData.message || "Login failed. Please try again.";
+                }
+            } else {
+                const errorData = await verifyResponse.json();
+                otpErr.textContent = errorData.message || "Invalid OTP. Please try again.";
+            }
+        } catch (error) {
+            console.error("Error verifying OTP:", error);
+            otpErr.textContent = "Error verifying OTP. Please try again.";
         }
     });
 });

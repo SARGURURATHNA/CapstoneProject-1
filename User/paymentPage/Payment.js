@@ -84,7 +84,7 @@ function saveTransaction(amount, date, transactionRef, paymentMode) {
 let planDetails = JSON.parse(localStorage.getItem("currentPlan"));
 
 // Save to backend
-let user = JSON.parse(sessionStorage.getItem("loggedInUser")); // assuming you store user info like this
+let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
 if (!user || !user.userId) {
     console.error("User not logged in");
     return;

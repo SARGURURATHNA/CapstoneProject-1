@@ -381,7 +381,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch & display plans with filters
     displayPlans(currentCategory, filters);
     });
-    
 });
 
 function showBenefitsModal(benefit) {
@@ -436,4 +435,33 @@ function showBenefitsModal(benefit) {
     // Show modal
     const benefitModal = new bootstrap.Modal(document.getElementById('benefitModal'));
     benefitModal.show();
-}  
+}
+
+function setupClearFilterButton() {
+    const clearFilterBtn = document.getElementById("clearFilter");
+    if (!clearFilterBtn) return;
+    
+    clearFilterBtn.addEventListener("click", function() {
+        console.log("Clear filter clicked"); // Debug log
+        
+        // Uncheck all filter checkboxes
+        const filterCheckboxes = document.querySelectorAll('#filterModal input[type="checkbox"]');
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Get the currently selected tab/category
+        const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+        const currentCategory = activeTab ? activeTab.innerText.trim() : "";
+        
+        // Force page reset
+        window.currentPage = 0;
+        
+        // Reload the page with just the category parameter
+        window.location.href = `?category=${encodeURIComponent(currentCategory)}`;
+    });
+}
+
+// Call this function at the end of your existing DOMContentLoaded event
+// Or add this line at the end of your script:
+document.addEventListener("DOMContentLoaded", setupClearFilterButton);

@@ -58,11 +58,16 @@
     <section class="All_Plans" style="margin-top: 50px;">
         <div class="container mt-5">
           <div class="d-flex justify-content-between align-items-center">
-            <h3><strong>All Plans</strong></h3>
-            <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#filterModal">
-                <i class="bi bi-funnel"></i> Filter
-            </button>
-        </div>
+                <h3><strong>All Plans</strong></h3>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-outline-secondary me-2" id="clearFilter">
+                      <i class="bi bi-x-circle"></i> Clear Filters
+                    </button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#filterModal">
+                      <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </div>
 
             <ul class="nav nav-tabs mt-3" id="categoryTabs">
             </ul>
