@@ -7,13 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const backendBaseUrl = "http://localhost:8083/api"; // your backend base URL
 
-    // Check if mobile number exists
-    // async function isMobileNumberRegistered(mobileNumber) {
-    //     const response = await fetch(`${backendBaseUrl}/exists-by-mobile/${mobileNumber}`);
-    //     const exists = await response.json();
-    //     return exists;
-    // }
-
     getOtpButton.addEventListener("click", async function (event) {
         const mobileNumber = mobileInput.value.trim();
 
@@ -25,13 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
             mobileErr.textContent = "Invalid mobile number. Enter a 10-digit number.";
             return;
         } 
-        
-        // Check if mobile number exists in the system
-        // const exists = await isMobileNumberRegistered(mobileNumber);
-        // if (!exists) {
-        //     mobileErr.textContent = "Mobile number not found in system.";
-        //     return;
-        // }
         
         // Clear any previous error messages
         mobileErr.textContent = "";
@@ -104,13 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
         if(!isValid) return;
         
-        // Check if mobile number exists in system
-        // const exists = await isMobileNumberRegistered(mobileNumber);
-        // if (!exists) {
-        //     mobileErr.textContent = "Mobile number not found in system.";
-        //     return;
-        // }
-        
         // Verify OTP through Twilio
         try {
             const verifyResponse = await fetch(`${backendBaseUrl}/auth/verify-otp`, {
@@ -144,6 +123,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     sessionStorage.setItem("userRole", loginData.role);
                     sessionStorage.setItem("lastLogin", loginData.lastLogin);
                     sessionStorage.setItem("mobileNumber", mobileNumber);
+
+                    const userResponse = await fetch(`${backendBaseUrl}/users/mobile/${mobileNumber}`, { method: "GET" });
+
+                    if (userResponse.ok) {
+                        const userData = await userResponse.json();
+                        sessionStorage.setItem("loggedInUser", JSON.stringify(userData));
+                    } else {
+                        console.error("Failed to fetch user details.");
+                    }
                     
                     alert("Login successful! Redirecting to Plans page...");
                     window.location.href = "../plansPage/Plans.html";

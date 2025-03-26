@@ -8,7 +8,7 @@ function buyPlan(cost, validity, data, sms, calls) {
 }
 
 function isLoggedIn() {
-    return localStorage.getItem("isLoggedIn") === "true";
+    return sessionStorage.getItem("accessToken") !== null;
 }
 
 function showLoginModal() {
@@ -46,9 +46,6 @@ async function validateAndRecharge() {
         sessionStorage.setItem("mobileNumber", phoneNumber);
 
         window.location.href = `../plansPage/Plans.html?phone=${phoneNumber}&quickRecharge=true`;
-        // alert("Login successful! Redirecting to Plans page...");
-        // sessionStorage.setItem("isLoggedIn", "true");
-        // window.location.href = "../plansPage/Plans.html";
     }
 }
 

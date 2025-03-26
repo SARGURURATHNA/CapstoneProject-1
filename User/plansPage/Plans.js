@@ -6,7 +6,7 @@ window.onload=function(){
 
 
 function isLoggedIn() {
-    return sessionStorage.getItem("isLoggedIn") === "true";
+    return sessionStorage.getItem("accessToken") !== null;
 }
 
 function showLoginPopup() {

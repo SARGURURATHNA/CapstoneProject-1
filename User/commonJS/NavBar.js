@@ -11,10 +11,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (accessToken) {
             const mobileNumber = sessionStorage.getItem("mobileNumber");
             const userRole = sessionStorage.getItem("userRole");
+
+            let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
             
             // User is logged in: Show "My Account" and "Logout"
             dropdownMenu.innerHTML = `
-                <li class="dropdown-header fw-bold text-primary">${mobileNumber}</li>
+                <li class="dropdown-header fw-bold text-primary">${user.firstName+" "+user.lastName}</li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="../rechargehistoryPage/RechargeHistory.html">My Account</a></li>
                 <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
