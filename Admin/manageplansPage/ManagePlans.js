@@ -359,17 +359,17 @@ document.addEventListener("DOMContentLoaded", function () {
     displayPlans(currentCategory, filters);
     });
 
-// Add category event listener
-document.getElementById('saveCategory').addEventListener('click', function() {
-        const categoryName = document.getElementById('categoryName').value.trim();
-        
-        if (!categoryName) {
-          alert('Please enter a category name');
-          return;
-        }
-        
-        saveCategory(categoryName);
-      });
+    // Add category event listener
+    document.getElementById('saveCategory').addEventListener('click', function() {
+            const categoryName = document.getElementById('categoryName').value.trim();
+            
+            if (!categoryName) {
+            alert('Please enter a category name');
+            return;
+            }
+            
+            saveCategory(categoryName);
+        });
 
       window.refreshCurrentPlans = async function() {
         const activeTab = document.querySelector(".nav-tabs .nav-link.active");
@@ -383,6 +383,55 @@ document.getElementById('saveCategory').addEventListener('click', function() {
         await displayPlans(currentCategory, filters);
     };
 });
+
+// Category Deletion.
+async function deleteCurrentCategory() {
+    const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+    if (!activeTab) {
+        alert("No category selected");
+        return;
+    }
+
+    const categoryToDelete = activeTab.innerText.trim();
+
+    try {
+        const response = await fetch(`http://localhost:8083/api/plans/categories/${encodeURIComponent(categoryToDelete)}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+        }
+
+        // Remove the deleted category tab
+        activeTab.closest('li').remove();
+
+        // Select the first remaining tab or reset the view
+        const remainingTabs = document.querySelectorAll("#categoryTabs .nav-link");
+        if (remainingTabs.length > 0) {
+            remainingTabs[0].click(); // Activate the first tab
+        } else {
+            // No categories left
+            planContainer.innerHTML = "<p class='col-12 text-center'>No categories available.</p>";
+            updatePaginationControls();
+        }
+
+        // Close the delete confirmation modal
+        const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteCategoryModal'));
+        if (deleteModal) {
+            deleteModal.hide();
+        }
+
+        alert(`Category "${categoryToDelete}" has been deleted successfully.`);
+    } catch (error) {
+        console.error("Error deleting category:", error);
+        alert(`Failed to delete category: ${error.message}`);
+    }
+}
+
+// Add this to your existing code or event listeners
+document.getElementById('confirmDeleteCategory').addEventListener('click', deleteCurrentCategory);
 
 
 // Adding a new category
