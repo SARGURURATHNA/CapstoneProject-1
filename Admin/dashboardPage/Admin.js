@@ -20,7 +20,7 @@ function loadDashboardMetrics() {
         .then(data => {
             document.getElementById("totalSubscribers").textContent = data.totalUsers;
             document.getElementById("activeSubscribers").textContent = data.activeUsers;
-            document.getElementById("monthlyRevenue").textContent = data.monthlyRevenue;
+            document.getElementById("monthlyRevenue").textContent = "₹"+data.monthlyRevenue;
         })
         .catch(error => {
             console.error("Failed to load metrics:", error);

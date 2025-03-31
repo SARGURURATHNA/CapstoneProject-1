@@ -1,9 +1,9 @@
 window.onload = function () {
     // Line Chart (Revenue)
-    fetch("http://localhost:8083/api/users/metrics")
+    fetch("http://localhost:8083/api/transactions/revenue-per-month")
     .then(response => response.json())
     .then(data => {
-        const revenueData = data.monthlyRevenueData;
+        const revenueData = data.monthlyRevenue;
         const labels = Object.keys(revenueData); // e.g., ["Jan", "Feb", ...]
         const revenueValues = Object.values(revenueData).map(val => (val / 1000).toFixed(2)); // Convert to thousands
 
@@ -84,7 +84,13 @@ window.onload = function () {
     .then(response => response.json())
     .then(data => {
         const labels = Object.keys(data); // Example: ["January", "February", ..., "December"]
-        const values = Object.values(data).map(count => (count / 1000).toFixed(2)); // In thousands
+
+        const maxValue = Math.max(...Object.values(data));
+        const useThousands = maxValue > 1000;
+        
+        const values = Object.values(data).map(count => {
+            return useThousands ? (count / 1000).toFixed(2) : count;
+        });
 
         const barCtx = document.getElementById('barChart').getContext('2d');
 
@@ -169,7 +175,12 @@ window.onload = function () {
 
         // Extract categories and counts from the response map
         const categories = Object.keys(data); // x-axis labels
-        const counts = Object.values(data).map(count => (count / 1000).toFixed(2)); // in thousands
+        const maxValue = Math.max(...Object.values(data));
+        const useThousands = maxValue > 1000;
+        
+        const counts = Object.values(data).map(count => {
+            return useThousands ? (count / 1000).toFixed(2) : count;
+        });
 
         const backgroundColors = ['#007bff', '#28a745', '#ffcc00', '#ff5733', '#6c757d'];
 
@@ -179,7 +190,7 @@ window.onload = function () {
             data: {
                 labels: categories,
                 datasets: [{
-                    label: 'Recharges (in thousands)',
+                    label: useThousands ? 'Recharges (in thousands)' : 'Recharges',
                     data: counts,
                     backgroundColor: backgroundColors
                 }]
@@ -325,6 +336,7 @@ function downloadChartData(chartId) {
     XLSX.writeFile(wb, fileName);
 }
 
+// Logout Function
 function handleLogout() {
     const token = sessionStorage.getItem("accessToken");
     
