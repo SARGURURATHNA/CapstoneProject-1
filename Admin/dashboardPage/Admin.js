@@ -18,8 +18,8 @@ function loadDashboardMetrics() {
     fetch("http://localhost:8083/api/users/metrics")
         .then(response => response.json())
         .then(data => {
-            document.getElementById("totalSubscribers").textContent = data.totalSubscribers;
-            document.getElementById("activeSubscribers").textContent = data.activeSubscribers;
+            document.getElementById("totalSubscribers").textContent = data.totalUsers;
+            document.getElementById("activeSubscribers").textContent = data.activeUsers;
             document.getElementById("monthlyRevenue").textContent = data.monthlyRevenue;
         })
         .catch(error => {
@@ -169,20 +169,16 @@ function downloadAllExcel() {
     XLSX.writeFile(wb, "Recharge_History.xlsx");
 }
 
-
+const adminUser = "http://localhost:8083/api/users/admin-users";
 // Profile Modals to admin.
 function setupProfileModal() {
-    const togglePasswordBtn = document.getElementById("togglePassword");
     const passwordSpan = document.getElementById("adminPassword");
 
-    const loggedInAdmin = JSON.parse(sessionStorage.getItem("loggedInAdmin"));
-
-    const mobileNumber = loggedInAdmin?.mobileNumber;
-
-    if (mobileNumber) {
-        fetch(`http://localhost:8083/api/users/mobile/${mobileNumber}`)
+        fetch(`http://localhost:8083/api/users/admin-users`)
             .then(response => response.json())
-            .then(user => {
+            .then(adminUser => {
+                const user = adminUser[0];
+                console.log(user);
                 document.getElementById("adminFirstName").textContent = user.firstName || "-";
                 document.getElementById("adminLastName").textContent = user.lastName || "-";
                 document.getElementById("adminPhone").textContent = user.mobileNumber || "-";
@@ -191,24 +187,21 @@ function setupProfileModal() {
                 document.getElementById("adminDOB").textContent = user.dob || "-";
                 document.getElementById("adminUsername").textContent = user.username || "-";
 
-                togglePasswordBtn.addEventListener("click", function () {
-                    if (passwordSpan.textContent === "*******") {
-                        passwordSpan.textContent = user.password || "-";
-                        togglePasswordBtn.textContent = "Hide";
-                    } else {
-                        passwordSpan.textContent = "*******";
-                        togglePasswordBtn.textContent = "Show";
-                    }
-                });
-            
                 // Set hidden password for toggle
                 passwordSpan.textContent = "*******";
-                togglePasswordBtn.dataset.password = user.password;
+                sessionStorage.setItem("adminUserId",user.userId);
 
                 // Optional: combine multiple address fields if needed
                 if (user.addresses && user.addresses.length > 0) {
                     const address = user.addresses[0]; // taking first address
-                    const fullAddress = `${address.doorNo || ""}, ${address.street || ""}, ${address.city || ""}, ${address.district || ""}, ${address.state || ""}, ${address.pincode || ""}`;
+                    const fullAddress = [
+                        address.doorNo,
+                        address.street,
+                        address.city,
+                        address.district,
+                        address.state,
+                        address.pincode
+                    ].filter(part => part && part.trim() !== "").join(", ");
                     document.getElementById("adminAddress").textContent = fullAddress;
                 } else {
                     document.getElementById("adminAddress").textContent = "-";
@@ -217,7 +210,6 @@ function setupProfileModal() {
             .catch(error => {
                 console.error("Error fetching admin data:", error);
             });
-    }
 }
 
 // Function to setup the edit modals
@@ -267,14 +259,21 @@ function setupEditModals() {
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    return response.text().then(text => {
+                        try {
+                            const json = JSON.parse(text);
+                            throw new Error(json.error || 'Network response was not ok');
+                        } catch (e) {
+                            throw new Error('Network response was not ok');
+                        }
+                    });
                 }
                 return response.json();
             })
-            .then(updatedUser => {
+            .then(data => {
                 // Update the UI with new values
-                document.getElementById('adminEmail').textContent = updatedUser.email;
-                document.getElementById('adminAlternatePhone').textContent = updatedUser.alternateMobile;
+                document.getElementById('adminEmail').textContent = data.email || "-";
+                document.getElementById('adminAlternatePhone').textContent = data.alternateMobile || "-";
                 
                 // Close the modal
                 const modal = bootstrap.Modal.getInstance(editPersonalModal);
@@ -293,49 +292,41 @@ function setupEditModals() {
         }
     });
     
-// Password confirmation validation
-const newPasswordInput = document.getElementById('newPassword');
-const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
-const passwordMatchError = document.getElementById('passwordMatchError');
-
-confirmNewPasswordInput.addEventListener('input', function() {
-    if (newPasswordInput.value !== confirmNewPasswordInput.value) {
-        passwordMatchError.classList.remove('d-none');
-    } else {
-        passwordMatchError.classList.add('d-none');
-    }
-});
-
-// Handle saving edited login information
-document.getElementById('saveLoginInfoBtn').addEventListener('click', function() {
-    const currentPasswordInput = document.getElementById('currentPassword');
+    // Password confirmation validation
     const newPasswordInput = document.getElementById('newPassword');
     const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+    const passwordMatchError = document.getElementById('passwordMatchError');
+
+    confirmNewPasswordInput.addEventListener('input', function() {
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.classList.remove('d-none');
+        } else {
+            passwordMatchError.classList.add('d-none');
+        }
+    });
+
+    // Handle saving edited login information
+    document.getElementById('saveLoginInfoBtn').addEventListener('click', function() {
+        const currentPasswordInput = document.getElementById('currentPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
     
-    // Validate inputs
-    if (!currentPasswordInput.value || !newPasswordInput.value || !confirmNewPasswordInput.value) {
-        alert('Please fill in all password fields');
-        return;
-    }
-    
-    if (newPasswordInput.value !== confirmNewPasswordInput.value) {
-        passwordMatchError.classList.remove('d-none');
-        return;
-    }
-    
-    // Get admin data from sessionStorage
-    const adminUser = JSON.parse(sessionStorage.getItem("loggedInAdmin"));
-    const userId = sessionStorage.getItem("adminUserId");
-    
-    if (userId) {
-        // Verify current password
-        if (currentPasswordInput.value !== adminUser.password) {
-            alert('Current password is incorrect');
+        // Validate inputs
+        if (!currentPasswordInput.value || !newPasswordInput.value || !confirmNewPasswordInput.value) {
+            alert('Please fill in all password fields');
             return;
         }
         
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.classList.remove('d-none');
+            return;
+        }
+
+        const userId = sessionStorage.getItem("adminUserId");
+        
         // Prepare data for API
         const updates = {
+            currentPassword: currentPasswordInput.value,
             password: newPasswordInput.value
         };
         
@@ -343,27 +334,20 @@ document.getElementById('saveLoginInfoBtn').addEventListener('click', function()
         fetch(`http://localhost:8083/api/users/${userId}/update`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify(updates)
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Failed to update password');
+                });
             }
             return response.json();
         })
-        .then(updatedUser => {
-            // Update stored password in sessionStorage
-            adminUser.password = newPasswordInput.value;
-            sessionStorage.setItem("loggedInAdmin", JSON.stringify(adminUser));
-            
-            // If you have a togglePassword element, update it too
-            const togglePasswordElement = document.getElementById('togglePassword');
-            if (togglePasswordElement) {
-                togglePasswordElement.dataset.password = newPasswordInput.value;
-            }
-            
+        .then(data => {
             // Close the modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('editLoginModal'));
             modal.hide();
@@ -372,17 +356,13 @@ document.getElementById('saveLoginInfoBtn').addEventListener('click', function()
             document.getElementById('editLoginForm').reset();
             
             // Show success message
-            alert('Password updated successfully!');
+            alert(data.message || 'Password updated successfully!');
         })
         .catch(error => {
             console.error('Error updating password:', error);
             alert('Failed to update password. Please try again.');
         });
-    } else {
-        // If no user ID found, show error
-        alert('Unable to update password. Please log in again.');
-    }
-});
+    });
 }
 
 // Function to handle logout

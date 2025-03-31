@@ -226,7 +226,8 @@ async function updateUser(userId, newStatus) {
         const response = await fetch(`http://localhost:8083/api/users/${userId}/status`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify({userStatus:newStatus})
         });
@@ -310,8 +311,24 @@ async function handleUpdate() {
 }
 
 function handleLogout() {
-    sessionStorage.clear(); // This removes ALL session storage keys
-    window.location.href = "../loginPage/Login.html";
+    const token = sessionStorage.getItem("accessToken");
+    
+    fetch("http://localhost:8083/api/auth/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        if (response.ok) {
+            // Clear all session storage
+            sessionStorage.clear();
+            // Redirect to login page
+            window.location.href = "../loginPage/Login.html";
+        }
+    }).catch(error => {
+        console.error("Logout failed:", error);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

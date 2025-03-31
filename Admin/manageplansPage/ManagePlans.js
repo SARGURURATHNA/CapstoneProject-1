@@ -244,6 +244,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (validity === null || validity === undefined || validity === 0) validity = "N/A";
                     calls = "₹"+calls + " Talktime";
                 }
+                else{
+                    validity = validity +" days";
+                }
                 const planHTML = `
                 <div class="col-md-3 col-sm-6 g-5">
                     <div class="plan-card h-100 text-center position-relative">
@@ -643,8 +646,24 @@ function showBenefitsModal(benefit) {
 }
 
 function handleLogout() {
-    sessionStorage.clear(); // This removes ALL session storage keys
-    window.location.href = "../loginPage/Login.html";
+    const token = sessionStorage.getItem("accessToken");
+    
+    fetch("http://localhost:8083/api/auth/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        if (response.ok) {
+            // Clear all session storage
+            sessionStorage.clear();
+            // Redirect to login page
+            window.location.href = "../loginPage/Login.html";
+        }
+    }).catch(error => {
+        console.error("Logout failed:", error);
+    });
 }
 
 function setupClearFilterButton() {

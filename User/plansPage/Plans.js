@@ -271,6 +271,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (validity === null || validity === undefined || validity === 0) validity = "N/A";
                     calls = "₹"+calls + " Talktime";
                 }
+                else{
+                    validity = validity +" days";
+                }
                 const planHTML = `
                 <div class="col-md-3 col-sm-6 g-5">
                     <div class="plan-card h-100 text-center position-relative">

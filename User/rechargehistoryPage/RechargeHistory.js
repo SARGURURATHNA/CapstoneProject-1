@@ -1,5 +1,11 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    const viewPlanButton = document.querySelector(".current-plan button");
+
+    viewPlanButton.addEventListener("click", function () {
+        let planModal = new bootstrap.Modal(document.getElementById("planModal"));
+        planModal.show();
+    });
     const modalEl = document.getElementById("planModal");
     planModal = new bootstrap.Modal(modalEl);
     let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
@@ -215,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    let selectedProfileImage = null;
+    // let selectedProfileImage = null;
 
     fetch(`http://localhost:8083/api/users/${userId}`)
         .then(response => response.json())
@@ -229,9 +235,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("editalternateMobile").value = user.alternateMobile;
             document.getElementById("editDob").value = user.dob;
             document.getElementById("editEmail").value = user.email;
-
-            const editProfilePic = document.getElementById("editProfilePic");
-            const editInitialCircle = document.getElementById("editInitialCircle");
 
             if (user.profileImg) {
                 // Show the image and hide the initial circle
@@ -257,117 +260,35 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error fetching user details:", error);
         });
 
-
-        document.getElementById("profileImageContainer").addEventListener("click", function() {
-            document.getElementById("profileImageUpload").click();
-        });
-        
-        // Handle file selection
-        document.getElementById("profileImageUpload").addEventListener("change", function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Store the file for later use
-                selectedProfileImage = file;
-                
-                // Display the selected image
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const editProfilePic = document.getElementById("editProfilePic");
-                    const editInitialCircle = document.getElementById("editInitialCircle");
-                    
-                    editProfilePic.src = e.target.result;
-                    editProfilePic.classList.remove("d-none");
-                    editInitialCircle.classList.add("d-none");
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
     // Save only email when the Save Changes button is clicked
-    document.getElementById("saveChanges").addEventListener("click", function() {
-        const updatedEmail = document.getElementById("editEmail").value;
-    const updatedAlternateMobile = document.getElementById("editalternateMobile").value;
-    
-    // Create a FormData object to handle the file upload
-    const formData = new FormData();
-    formData.append("email", updatedEmail);
-    formData.append("alternateMobile", updatedAlternateMobile);
-    
-    // If a new profile image was selected, add it to the form data
-    if (selectedProfileImage) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64String = e.target.result;
-            
-            // Resize the image before sending
-            resizeImage(base64String)
-                .then(resizedImage => {
-                    // Extract the base64 string (remove the data:image/xxx;base64, prefix)
-                    const finalBase64 = resizedImage.split(',')[1];
-                    updateUserProfile(userId, updatedEmail, updatedAlternateMobile, finalBase64);
-                });
-        };
-        reader.readAsDataURL(selectedProfileImage);
-    } else {
-        // No new image selected, just update other fields
-        updateUserProfile(userId, updatedEmail, updatedAlternateMobile, null);
-    }
-
-    });
-
-    //resizing image
-    function resizeImage(base64Str, maxWidth = 50, maxHeight = 50) {
-        return new Promise((resolve) => {
-            let img = new Image();
-            img.src = base64Str;
-            img.onload = () => {
-                let canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-                
-                // Calculate the new dimensions
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height *= maxWidth / width;
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width *= maxHeight / height;
-                        height = maxHeight;
-                    }
-                }
-                
-                canvas.width = width;
-                canvas.height = height;
-                let ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                // Get the resized image as base64
-                resolve(canvas.toDataURL('image/jpeg', 0.25));
-            };
-        });
-    }
-    
 });
 
-function updateUserProfile(userId, email, alternateMobile, profileImgBase64) {
+document.getElementById("saveChanges").addEventListener("click", function() {
+    const storedUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    const userId = storedUser?.userId;
+    const updatedEmail = document.getElementById("editEmail").value;
+    const updatedAlternateMobile = document.getElementById("editalternateMobile").value;
+
+// Create a FormData object to handle the file upload
+const formData = new FormData();
+formData.append("email", updatedEmail);
+formData.append("alternateMobile", updatedAlternateMobile);
+updateUserProfile(userId, updatedEmail, updatedAlternateMobile);
+
+});    
+
+function updateUserProfile(userId, email, alternateMobile) {
     // Prepare the data object
     const updateData = {
         email: email,
         alternateMobile: alternateMobile
     };
     
-    // Add profile image if provided
-    if (profileImgBase64) {
-        updateData.profileImg = profileImgBase64;
-    }
-    
     // Send the update request
     fetch(`http://localhost:8083/api/users/${userId}/update`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json','Accept': 'application/json'
         },
         body: JSON.stringify(updateData)
     })
@@ -398,13 +319,5 @@ document.getElementById("editButton").addEventListener("click", function () {
     editModal.show();
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const viewPlanButton = document.querySelector(".current-plan button");
-
-    viewPlanButton.addEventListener("click", function () {
-        let planModal = new bootstrap.Modal(document.getElementById("planModal"));
-        planModal.show();
-    });
-});
 
 
